@@ -462,7 +462,9 @@ class DatasetDataId(Resource):
         subdirectories = [f for f in sorted(os.listdir(directory))
                           if os.path.isdir(directory + f) and not f.startswith('.')]
         
-        categories = CategoryModel.objects(id__in=dataset.categories).only('id', 'name')
+        # This is the problem thing for category retrieval for dataset.vue
+        # categories = CategoryModel.objects(id__in=dataset.categories).only('id', 'name')
+        categories = CategoryModel.objects(id__in=dataset.categories)
 
         return {
             "total": total,

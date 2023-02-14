@@ -1,32 +1,35 @@
 <template>
   <div @mousemove="mouseMove">
     <div style="padding-top: 55px" />
-    
-    <div
-      class="bg-light"
-      :style="{ 'margin-left': sidebar.width + 'px' }"
-    >
+
+    <div class="bg-light" :style="{ 'margin-left': sidebar.width + 'px' }">
       <nav class="nav border-bottom shadow-sm" style="background-color: #4b5162">
-        <a class="btn tab" @click="tab = 'images'" :style="{'color': tab == 'images' ? 'white' : 'darkgray'}">
+        <a class="btn tab" @click="tab = 'images'" :style="{ color: tab == 'images' ? 'white' : 'darkgray' }">
           <i class="fa fa-picture-o" aria-hidden="true"></i> Images
         </a>
-        <a class="btn tab" @click="tab = 'exports'" :style="{'color': tab == 'exports' ? 'white' : 'darkgray'}">
+        <a class="btn tab" @click="tab = 'batchtag'" :style="{ color: tab == 'batchtag' ? 'white' : 'darkgray' }">
+          <i class="fa fa-list" aria-hidden="true"></i> Batch tagging
+        </a>
+        <a class="btn tab" @click="tab = 'exports'" :style="{ color: tab == 'exports' ? 'white' : 'darkgray' }">
           <i class="fa fa-share" aria-hidden="true"></i> Exports
         </a>
-        <a class="btn tab" @click="tab = 'members'" :style="{'color': tab == 'members' ? 'white' : 'darkgray'}">
+        <a class="btn tab" @click="tab = 'members'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
           <i class="fa fa-users" aria-hidden="true"></i> Members
         </a>
-        <a class="btn tab" @click="tab = 'statistics'" :style="{'color': tab == 'statistics' ? 'white' : 'darkgray'}">
+        <a class="btn tab" @click="tab = 'statistics'" :style="{ color: tab == 'statistics' ? 'white' : 'darkgray' }">
           <i class="fa fa-bar-chart" aria-hidden="true"></i> Statistics
         </a>
-        <a class="btn tab" @click="tab = 'settings'" :style="{'color': tab == 'settings' ? 'white' : 'darkgray'}">
+        <a class="btn tab" @click="tab = 'settings'" :style="{ color: tab == 'settings' ? 'white' : 'darkgray' }">
           <i class="fa fa-cog" aria-hidden="true"></i> Settings
         </a>
+        <a class="btn tab" @click="tab = 'testdragselect'"
+          :style="{ color: tab == 'testdragselect' ? 'white' : 'darkgray' }">
+          <i class="fa fa-list" aria-hidden="true"></i> Test dragsel
+        </a>
       </nav>
-    
+
       <div class="bg-light text-left" style="overflow: auto; height: calc(100vh - 100px); margin: 10px">
         <div class="container" v-show="tab == 'images'">
-          
           <ol class="breadcrumb">
             <li class="breadcrumb-item"></li>
             <li class="breadcrumb-item active">
@@ -34,16 +37,9 @@
                 {{ dataset.name }}
               </button>
             </li>
-            <li
-              v-for="(folder, folderId) in folders"
-              :key="folderId"
-              class="breadcrumb-item"
-            >
-              <button
-                class="btn btn-sm btn-link"
-                :disabled="folders[folders.length - 1] === folder"
-                @click="removeFolder(folder)"
-              >
+            <li v-for="(folder, folderId) in folders" :key="folderId" class="breadcrumb-item">
+              <button class="btn btn-sm btn-link" :disabled="folders[folders.length - 1] === folder"
+                @click="removeFolder(folder)">
                 {{ folder }}
               </button>
             </li>
@@ -59,141 +55,334 @@
             </div>
             <Pagination :pages="pages" @pagechange="updatePage" />
           </div>
-
         </div>
+
+        <div class="container" v-show="tab == 'testdragselect'">
+          <h1>Vue Drag Select Example</h1>
+          <drag-select-container selectorClass="item">
+            <template slot-scope="{ selectedItems }">
+              <div v-for="item in 50" :key="item" :class="getClasses(item, selectedItems)" :data-item="item">Item {{
+                item
+              }}</div>
+            </template>
+          </drag-select-container>
+        </div>
+
+        <!-- this one is for displaying tagly style -->
+
+        <div class="container" v-show="tab == 'batchtag'">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"></li>
+            <li class="breadcrumb-item active">
+              <button class="btn btn-sm btn-link" @click="folders = []">
+                {{ dataset.name }}
+              </button>
+            </li>
+            <li v-for="(folder, folderId) in folders" :key="folderId" class="breadcrumb-item">
+              <button class="btn btn-sm btn-link" :disabled="folders[folders.length - 1] === folder"
+                @click="removeFolder(folder)">
+                {{ folder }}
+              </button>
+            </li>
+          </ol>
+
+          <!-- <div
+            class="sidebar-section"
+            :style="{ 'max-height': mode == 'label' ? '100%' : '57%' }"
+          >
+            <p
+              v-if="categories.length == 0"
+              style="color: lightgray; font-size: 12px"
+            >
+              No categories have been enabled for this image.
+            </p>
+
+            <div
+              v-show="mode == 'segment'"
+              style="overflow: auto; max-height: 100%"
+            >
+              <Category
+                v-for="(category, index) in categories"
+                :key="category.id + '-category'"
+                :simplify="simplify"
+                :categorysearch="search"
+                :category="category"
+                :all-categories="categories"
+                :opacity="shapeOpacity"
+                :hover="hover"
+                :index="index"
+                @click="onCategoryClick"
+                @keypoints-complete="onKeypointsComplete"
+                :current="current"
+                :active-tool="activeTool"
+                :scale="image.scale"
+                ref="category"
+              />
+            </div>
+
+            <div
+              v-show="mode == 'label'"
+              style="overflow: auto; max-height: 100%"
+            >
+              <CLabel
+                v-for="category in categories"
+                v-model="image.categoryIds"
+                :key="category.id + '-label'"
+                :category="category"
+                :search="search"
+              />
+            </div>
+          </div> -->
+
+          <!-- <p class="text-center" style="color: lightgray">
+            All the damn categories
+            <strong style="color: black">{{ categories }}</strong> 
+          </p> -->
+
+          <!-- categories buttons -->
+          <!-- 
+          <div
+            class="sidebar-section"
+            :style="{ 'max-height': mode == 'label' ? '100%' : '57%' }"
+          > -->
+          <p class="text-center" style="color: lightgray">
+            All the categories
+            <strong style="color: black">{{ categories }}</strong>
+          </p>
+
+          <p class="text-center" style="color: lightgray">
+            the whole response allData
+            <strong style="color: black">{{ allData }}</strong>
+          </p>
+          <!-- <div
+              v-show="mode == 'segment'"
+              style="overflow: auto; max-height: 100%"
+            > -->
+
+          <!-- <div
+            v-show="mode == 'segment'"
+            style="overflow: auto; max-height: 100%"
+          >
+            <Category
+              v-for="(category, index) in categories"
+              :key="category.id + '-category'"
+              :simplify="simplify"
+              :categorysearch="search"
+              :category="category"
+              :all-categories="categories"
+              :opacity="shapeOpacity"
+              :hover="hover"
+              :index="index"
+              @click="onCategoryClick"
+              @keypoints-complete="onKeypointsComplete"
+              :current="current"
+              :active-tool="activeTool"
+              :scale="image.scale"
+              ref="category"
+            />
+          </div> -->
+
+          <span v-for="(category, index) in categories" :key="index"
+            class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
+            {{ category.name }}
+          </span>
+
+          <p class="text-center" style="color: black">Category cards</p>
+
+          <!-- <div>
+            <Category
+              v-for="(category, index) in categories"
+              :key="category.id + '-category'"
+              :index="index"
+              ref="category"
+            />
+          </div> -->
+
+          <p class="text-center" style="color: black">CLabel cards</p>
+
+          <!-- <div
+              v-show="mode == 'label'"
+              style="overflow: auto; max-height: 100%"
+            > -->
+          <!-- <div style="overflow: auto; max-height: 100%">
+            <CLabel
+              v-for="category in categories"
+              v-model="image.categoryIds"
+              :key="category.id + '-label'"
+              :category="category"
+            />
+          </div> -->
+          <!-- </div> -->
+
+          <p class="text-center" v-if="images.length < 1">
+            No images found in directory.
+          </p>
+
+          <!-- <p class="text-center" v-if="images.length >= 1">
+            Image level tagging
+          </p> -->
+
+          <div v-else>
+            <Pagination :pages="pages" @pagechange="updatePage" />
+            <div class="row">
+              <ImageCardBatch v-for="image in images" :key="image.id" :image="image" />
+            </div>
+            <Pagination :pages="pages" @pagechange="updatePage" />
+
+          </div>
+        </div>
+
         <div class="container" v-show="tab == 'exports'">
           <div class="card my-3 p-3 shadow-sm mr-2">
             <h6 class="border-bottom border-gray pb-2"><b>Exports</b></h6>
-            
+
             <div class="media text-muted pt-3" v-for="exp in datasetExports">
               <div class="media-body lh-125 border-bottom border-gray">
-                  {{exp.id}}. Exported {{ exp.ago.length > 0 ? exp.ago : 0 + " seconds" }} ago
-                  <div style="display: inline">
-                    <span
-                      v-for="tag in exp.tags"
-                      class="badge badge-secondary"
-                      style="margin: 1px"
-                    >
-                      {{tag}}
-                    </span>
-                  </div>
-                  <button 
-                    class="btn btn-sm btn-success"
-                    style="float: right; margin: 2px; padding: 2px"
-                    @click="downloadExport(exp.id)"
-                  >
-                    Download
-                  </button>
+                {{ exp.id }}. Exported
+                {{ exp.ago.length > 0 ? exp.ago : 0 + " seconds" }} ago
+                <div style="display: inline">
+                  <span v-for="tag in exp.tags" class="badge badge-secondary" style="margin: 1px">
+                    {{ tag }}
+                  </span>
+                </div>
+                <button class="btn btn-sm btn-success" style="float: right; margin: 2px; padding: 2px"
+                  @click="downloadExport(exp.id)">
+                  Download
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="container" v-show="tab == 'members'">
+          <div class="card my-3 p-3 shadow-sm mr-2">
+            <h6 class="border-bottom border-gray pb-2">
+              <b>Invite Members</b>
+            </h6>
+          </div>
 
           <div class="card my-3 p-3 shadow-sm mr-2">
-            <h6 class="border-bottom border-gray pb-2"><b>Invite Members</b></h6>
-            
-          </div>
-          
-          <div class="card my-3 p-3 shadow-sm mr-2">
-            <h6 class="border-bottom border-gray pb-2"><b>Existing Members</b></h6>
-            
+            <h6 class="border-bottom border-gray pb-2">
+              <b>Existing Members</b>
+            </h6>
+
             <div class="media text-muted pt-3" v-for="user in users">
-              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png" class="mr-2 rounded" style="width: 32px; height: 32px;">
-              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <div class="d-flex justify-content-between align-items-center w-100">
+              <img
+                src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
+                class="mr-2 rounded" style="width: 32px; height: 32px" />
+              <div class="
+                  media-body
+                  pb-3
+                  mb-0
+                  small
+                  lh-125
+                  border-bottom border-gray
+                ">
+                <div class="
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                    w-100
+                  ">
                   <div class="text-gray-dark">
-                    <strong>{{ user.name }}</strong> @{{user.username}}
+                    <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
                   <a href="#">{{ user.group }}</a>
                 </div>
-                <span class="d-block">Last seen: {{ new Date(user.last_seen['$date']).toISOString().slice(0, 19).replace('T', ' ') }} UTC</span>
+                <span class="d-block">Last seen:
+                  {{
+                    new Date(user.last_seen["$date"])
+                      .toISOString()
+                      .slice(0, 19)
+                      .replace("T", " ")
+                  }}
+                  UTC</span>
               </div>
             </div>
           </div>
-
         </div>
         <div class="container" v-show="tab == 'statistics'">
-          <div v-if="stats == null">
-            Crunching numbers...
-          </div>
+          <div v-if="stats == null">Crunching numbers...</div>
 
           <div v-else>
             <div class="row">
-              
               <div v-if="stats.total" class="card my-3 p-3 shadow-sm col-3 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Total</b></h6>
                 <div class="row" v-for="stat in Object.keys(stats.total)">
-                  <strong class="col-8">{{stat}}:</strong>
-                  <span class="col-4">{{stats.total[stat].toFixed(0)}}</span>
+                  <strong class="col-8">{{ stat }}:</strong>
+                  <span class="col-4">{{ stats.total[stat].toFixed(0) }}</span>
                 </div>
               </div>
 
               <div v-if="stats.average" class="card my-3 p-3 shadow-sm col-4 mr-2">
                 <h6 class="border-bottom border-gray pb-2"><b>Average</b></h6>
                 <div class="row" v-for="stat in Object.keys(stats.average)">
-                  <strong class="col-8">{{stat}}:</strong>
-                  <span class="col-4">{{stats.average[stat].toFixed(0)}}</span>
+                  <strong class="col-8">{{ stat }}:</strong>
+                  <span class="col-4">{{
+                    stats.average[stat].toFixed(0)
+                  }}</span>
                 </div>
               </div>
 
               <div v-if="stats.categories" class="card my-3 p-3 shadow-sm col-4 mr-2">
-                <h6 class="border-bottom border-gray pb-2"><b>Annotations Per Category</b></h6>
+                <h6 class="border-bottom border-gray pb-2">
+                  <b>Annotations Per Category</b>
+                </h6>
                 <div class="row" v-for="stat in Object.keys(stats.categories)">
-                  <strong class="col-8">{{stat}}:</strong>
-                  <span class="col-4">{{stats.categories[stat].toFixed(0)}}</span>
+                  <strong class="col-8">{{ stat }}:</strong>
+                  <span class="col-4">{{
+                    stats.categories[stat].toFixed(0)
+                  }}</span>
                 </div>
               </div>
 
               <div v-if="stats.images_per_category" class="card my-3 p-3 shadow-sm col-4 mr-2">
-                <h6 class="border-bottom border-gray pb-2"><b>Annotated Images Per Category</b></h6>
+                <h6 class="border-bottom border-gray pb-2">
+                  <b>Annotated Images Per Category</b>
+                </h6>
                 <div class="row" v-for="stat in Object.keys(stats.images_per_category)">
-                  <strong class="col-8">{{stat}}:</strong>
-                  <span class="col-4">{{stats.images_per_category[stat].toFixed(0)}}</span>
+                  <strong class="col-8">{{ stat }}:</strong>
+                  <span class="col-4">{{
+                    stats.images_per_category[stat].toFixed(0)
+                  }}</span>
                 </div>
               </div>
 
               <div v-if="stats.users" class="card my-3 p-3 shadow-sm col-6 mr-2">
-                <h6 class="border-bottom border-gray pb-2"><b>Annotations per User</b></h6>
+                <h6 class="border-bottom border-gray pb-2">
+                  <b>Annotations per User</b>
+                </h6>
                 <h6 class="row border-bottom border-gray pb-2">
-                    <span class="col-4">Username</span>
-                    <span class="col-4">Annotations</span>
-                    <span class="col-4">Images</span>
+                  <span class="col-4">Username</span>
+                  <span class="col-4">Annotations</span>
+                  <span class="col-4">Images</span>
                 </h6>
                 <div class="row" v-for="stat in Object.keys(stats.users)">
-                  <strong class="col-4">{{stat}}:</strong>
-                  <span class="col-4">{{stats.users[stat]["annotations"].toFixed(0)}}</span>
-                  <span class="col-4">{{stats.users[stat]["images"].toFixed(0)}}</span>
+                  <strong class="col-4">{{ stat }}:</strong>
+                  <span class="col-4">{{
+                    stats.users[stat]["annotations"].toFixed(0)
+                  }}</span>
+                  <span class="col-4">{{
+                    stats.users[stat]["images"].toFixed(0)
+                  }}</span>
                 </div>
               </div>
-
             </div>
-            
           </div>
         </div>
         <div class="container" v-show="tab == 'settings'">
           <div class="card my-3 p-3 shadow-sm mr-2">
             <h6 class="border-bottom border-gray pb-2"><b>Metadata</b></h6>
-            
-            <button 
-              class="btn btn-sm btn-block btn-danger"
-              @click="resetMetadata"
-            >
+
+            <button class="btn btn-sm btn-block btn-danger" @click="resetMetadata">
               Rest All Metadata
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <div
-      id="filter"
-      ref="sidebar"
-      class="sidebar"
-      :style="{ width: sidebar.width + 'px' }"
-    >
+    <div id="filter" ref="sidebar" class="sidebar" :style="{ width: sidebar.width + 'px' }">
       <div style="padding-top: 10px" />
       <h3>{{ dataset.name }}</h3>
       <p class="text-center" style="color: lightgray">
@@ -201,82 +390,49 @@
         displayed on <strong style="color: white">{{ pages }}</strong> pages.
       </p>
       <div class="row justify-content-md-center sidebar-section-buttons">
-        <button
-          type="button"
-          class="btn btn-success btn-block"
-          data-toggle="modal"
-          data-target="#generateDataset"
-        >
+        <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#generateDataset">
           <div v-if="generate.id != null" class="progress">
-            <div
-              class="progress-bar bg-success"
-              :style="{ 'width': `${generate.progress}%` }"
-            >
+            <div class="progress-bar bg-success" :style="{ width: `${generate.progress}%` }">
               Generating
             </div>
           </div>
           <div v-else>Generate</div>
         </button>
 
-        <button
-          type="button"
-          class="btn btn-secondary btn-block"
-          @click="createScanTask"
-        >
+        <button type="button" class="btn btn-secondary btn-block" @click="createScanTask">
           <div v-if="scan.id != null" class="progress">
-            <div
-              class="progress-bar bg-secondary"
-              :style="{ 'width': `${scan.progress}%` }"
-            >
+            <div class="progress-bar bg-secondary" :style="{ width: `${scan.progress}%` }">
               Scanning
             </div>
           </div>
           <div v-else>Scan</div>
         </button>
 
-        <button
-          type="button"
-          class="btn btn-primary btn-block"
-          @click="importModal"
-        >
+        <button type="button" class="btn btn-primary btn-block" @click="importModal">
           <div v-if="importing.id != null" class="progress">
-            <div
-              class="progress-bar bg-primary"
-              :style="{ 'width': `${importing.progress}%` }"
-            >
+            <div class="progress-bar bg-primary" :style="{ width: `${importing.progress}%` }">
               Importing
             </div>
           </div>
           <div v-else>Import COCO</div>
         </button>
 
-        <button
-          type="button"
-          class="btn btn-dark btn-block"
-          @click="exportModal"
-        >
+        <button type="button" class="btn btn-dark btn-block" @click="exportModal">
           <div v-if="exporting.id != null" class="progress">
-            <div
-              class="progress-bar bg-dark"
-              :style="{ 'width': `${exporting.progress}%` }"
-            >
+            <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
               Exporting
             </div>
           </div>
           <div v-else>Export COCO</div>
         </button>
       </div>
-      <hr>
+      <hr />
       <h6 class="sidebar-title text-center">Subdirectories</h6>
       <div class="sidebar-section" style="max-height: 30%; color: lightgray">
         <div v-if="subdirectories.length > 0">
-          <button
-            v-for="(subdirectory, subId) in subdirectories"
-            :key="subId"
-            class="btn badge badge-pill badge-primary category-badge"
-            style="margin: 2px"
-            @click="folders.push(subdirectory)"
-          >
+          <button v-for="(subdirectory, subId) in subdirectories" :key="subId"
+            class="btn badge badge-pill badge-primary category-badge" style="margin: 2px"
+            @click="folders.push(subdirectory)">
             {{ subdirectory }}
           </button>
         </div>
@@ -284,32 +440,21 @@
           No subdirectory found.
         </p>
       </div>
-      <hr>
+      <hr />
       <h6 class="sidebar-title text-center">Filtering Options</h6>
-      <div
-        class="sidebar-section"
-        style="max-height: 30%; color: lightgray"
-      >
+      <div class="sidebar-section" style="max-height: 30%; color: lightgray">
         <PanelString name="Contains" v-model="query.file_name__icontains" @submit="updatePage" />
         <PanelToggle name="Show Annotated" v-model="panel.showAnnotated" />
         <PanelToggle name="Show Not Annotated" v-model="panel.showNotAnnotated" />
         <PanelDropdown name="Order" v-model="order" :values="orderTypes" />
       </div>
-        <div
-          class="sidebar-section"
-          style="max-height: 30%; color: lightgray"
-        >
-          <div class="form-group">
-            <label>Show Annotated Categories </label>
-            <TagsInput
-              v-model="selected.categories"
-              element-id="selectedCategories"
-              title="Only shows images annotated with the selected categories for 'Show Annotated' button. Leave empty to show all annotated images."
-              :existing-tags="categoryTags"
-              :typeahead="true"
-              :typeahead-activation-threshold="0"
-            ></TagsInput>
-          </div>
+      <div class="sidebar-section" style="max-height: 30%; color: lightgray">
+        <div class="form-group">
+          <label>Show Annotated Categories </label>
+          <TagsInput v-model="selected.categories" element-id="selectedCategories"
+            title="Only shows images annotated with the selected categories for 'Show Annotated' button. Leave empty to show all annotated images."
+            :existing-tags="categoryTags" :typeahead="true" :typeahead-activation-threshold="0"></TagsInput>
+        </div>
       </div>
     </div>
 
@@ -318,12 +463,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Generate a Dataset</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -335,27 +475,15 @@
               </div>
               <div class="form-group">
                 <label>Limit</label>
-                <input
-                  class="form-control"
-                  type="number"
-                  v-model="generateLimit"
-                />
+                <input class="form-control" type="number" v-model="generateLimit" />
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="generateDataset"
-            >
+            <button type="button" class="btn btn-primary" @click="generateDataset">
               Generate
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
@@ -368,12 +496,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Upload COCO Annotaitons</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -386,19 +509,10 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="importCOCO"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-primary" @click="importCOCO" data-dismiss="modal">
               Upload
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
@@ -410,13 +524,8 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Export {{dataset.name}}</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <h5 class="modal-title">Export {{ dataset.name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -424,34 +533,20 @@
             <form>
               <div class="form-group">
                 <label>Categories (Empty export all)</label>
-                <TagsInput
-                  v-model="exporting.categories"
-                  element-id="exportCategories"
-                  :existing-tags="categoryTags"
-                  :typeahead="true"
-                  :typeahead-activation-threshold="0"
-                ></TagsInput>
+                <TagsInput v-model="exporting.categories" element-id="exportCategories" :existing-tags="categoryTags"
+                  :typeahead="true" :typeahead-activation-threshold="0"></TagsInput>
               </div>
               <div>
-                <input type="checkbox" class="form-check-input"
-                  v-model="exporting.with_empty_images">
+                <input type="checkbox" class="form-check-input" v-model="exporting.with_empty_images" />
                 <label class="form-check-label">export with not annotated images</label>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="exportCOCO"
-            >
+            <button type="button" class="btn btn-primary" @click="exportCOCO">
               Export
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
@@ -466,12 +561,18 @@ import toastrs from "@/mixins/toastrs";
 import Dataset from "@/models/datasets";
 import Export from "@/models/exports";
 import ImageCard from "@/components/cards/ImageCard";
+import ImageCardBatch from "@/components/cards/ImageCardBatch";
+// import DragSelect from "vue-drag-select";
 import Pagination from "@/components/Pagination";
 import PanelString from "@/components/PanelInputString";
 import PanelToggle from "@/components/PanelToggle";
-import PanelDropdown from "@/components/PanelInputDropdown"
+import PanelDropdown from "@/components/PanelInputDropdown";
 import JQuery from "jquery";
 import TagsInput from "@/components/TagsInput";
+import FileTitle from "@/components/annotator/FileTitle";
+import Category from "@/components/annotator/Category";
+import Label from "@/components/annotator/Label";
+import Annotations from "@/models/annotations";
 
 import { mapMutations } from "vuex";
 
@@ -480,19 +581,23 @@ let $ = JQuery;
 export default {
   name: "Dataset",
   components: {
+    FileTitle,
+    Category,
+    CLabel: Label,
     ImageCard,
+    ImageCardBatch,
     Pagination,
     PanelString,
     PanelToggle,
     PanelDropdown,
-    TagsInput
+    TagsInput,
   },
   mixins: [toastrs],
   props: {
     identifier: {
       type: [Number, String],
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -504,40 +609,41 @@ export default {
       images: [],
       folders: [],
       dataset: {
-        id: 0
+        id: 0,
       },
+      allData: {},
       users: [],
       subdirectories: [],
       status: {
-        data: { state: true, message: "Loading data" }
+        data: { state: true, message: "Loading data" },
       },
       keyword: "",
       mouseDown: false,
       sidebar: {
         drag: false,
         width: window.innerWidth * 0.2,
-        canResize: false
+        canResize: false,
       },
       scan: {
         progress: 0,
-        id: null
+        id: null,
       },
       generate: {
         progress: 0,
-        id: null
+        id: null,
       },
       importing: {
         progress: 0,
-        id: null
+        id: null,
       },
       exporting: {
         categories: [],
         progress: 0,
         with_empty_images: false,
-        id: null
+        id: null,
       },
       selected: {
-        categories: []
+        categories: [],
       },
       datasetExports: [],
       tab: "images",
@@ -545,17 +651,17 @@ export default {
       orderTypes: {
         file_name: "File Name",
         id: "Id",
-        path: "File Path"
+        path: "File Path",
       },
       query: {
         file_name__icontains: "",
-        ...this.$route.query
+        ...this.$route.query,
       },
       panel: {
         showAnnotated: true,
-        showNotAnnotated: true
+        showNotAnnotated: true,
       },
-      stats: null
+      stats: null,
     };
   },
   methods: {
@@ -565,7 +671,7 @@ export default {
 
       Dataset.generate(this.dataset.id, {
         keywords: [this.keyword],
-        limit: this.generateLimit
+        limit: this.generateLimit,
       });
     },
     updatePage(page) {
@@ -579,10 +685,13 @@ export default {
         ...this.query,
         annotated: this.queryAnnotated,
         category_ids__in: encodeURI(this.selected.categories),
-        order: this.order
+        order: this.order,
       })
-        .then(response => {
+        .then((response) => {
           let data = response.data;
+          console.log(data);
+
+          this.allData = data;
 
           this.images = data.images;
           this.dataset = data.dataset;
@@ -597,13 +706,13 @@ export default {
           // this.importing.id = data.importId;
           // this.exporting.id = data.exportId;
         })
-        .catch(error => {
+        .catch((error) => {
           this.axiosReqestError("Loading Dataset", error.response.data.message);
         })
         .finally(() => this.removeProcess(process));
     },
     getUsers() {
-      Dataset.getUsers(this.dataset.id).then(response => {
+      Dataset.getUsers(this.dataset.id).then((response) => {
         this.users = response.data;
       });
     },
@@ -611,21 +720,23 @@ export default {
       Export.download(id, this.dataset.name);
     },
     getExports() {
-      Dataset.getExports(this.dataset.id).then(response => {
+      Dataset.getExports(this.dataset.id).then((response) => {
         this.datasetExports = response.data;
       });
     },
     resetMetadata() {
-      let r = confirm("You can not undo reseting of all metadata in"
-        + "this dataset. This includes metadata of images"
-        + "and annotations.");
-      
+      let r = confirm(
+        "You can not undo reseting of all metadata in" +
+        "this dataset. This includes metadata of images" +
+        "and annotations."
+      );
+
       if (r) {
         Dataset.resetMetadata(this.dataset.id);
       }
     },
     getStats() {
-      Dataset.getStats(this.dataset.id).then(response => {
+      Dataset.getStats(this.dataset.id).then((response) => {
         this.stats = response.data;
       });
     },
@@ -636,11 +747,11 @@ export default {
       }
 
       Dataset.scan(this.dataset.id)
-        .then(response => {
+        .then((response) => {
           let id = response.data.id;
           this.scan.id = id;
         })
-        .catch(error => {
+        .catch((error) => {
           this.axiosReqestError(
             "Scanning Dataset",
             error.response.data.message
@@ -657,12 +768,16 @@ export default {
     },
     exportCOCO() {
       $("#exportDataset").modal("hide");
-      Dataset.exportingCOCO(this.dataset.id, this.exporting.categories, this.exporting.with_empty_images)
-        .then(response => {
+      Dataset.exportingCOCO(
+        this.dataset.id,
+        this.exporting.categories,
+        this.exporting.with_empty_images
+      )
+        .then((response) => {
           let id = response.data.id;
           this.exporting.id = id;
         })
-        .catch(error => {
+        .catch((error) => {
           this.axiosReqestError("Exporting COCO", error.response.data.message);
         })
         .finally(() => this.removeProcess(process));
@@ -682,11 +797,11 @@ export default {
     importCOCO() {
       let uploaded = document.getElementById("coco");
       Dataset.uploadCoco(this.dataset.id, uploaded.files[0])
-        .then(response => {
+        .then((response) => {
           let id = response.data.id;
           this.importing.id = id;
         })
-        .catch(error => {
+        .catch((error) => {
           this.axiosReqestError("Importing COCO", error.response.data.message);
         })
         .finally(() => this.removeProcess(process));
@@ -704,7 +819,7 @@ export default {
         event.preventDefault();
         let max = window.innerWidth * 0.5;
         this.sidebar.width = Math.min(Math.max(event.x, 150), max);
-        localStorage.setItem("dataset/sideWidth", this.sidebar.width)
+        localStorage.setItem("dataset/sideWidth", this.sidebar.width);
       }
     },
     startDrag() {
@@ -714,7 +829,7 @@ export default {
     stopDrag() {
       this.mouseDown = false;
       this.sidebar.canResize = false;
-    }
+    },
   },
   computed: {
     queryAnnotated() {
@@ -728,9 +843,9 @@ export default {
     },
     categoryTags() {
       let tags = {};
-      this.categories.forEach(c => tags[c.id] = c.name);
+      this.categories.forEach((c) => (tags[c.id] = c.name));
       return tags;
-    }
+    },
   },
   sockets: {
     taskProgress(data) {
@@ -751,7 +866,7 @@ export default {
       }
     },
     annotating(data) {
-      let image = this.images.find(i => i.id == data.image_id);
+      let image = this.images.find((i) => i.id == data.image_id);
       if (image == null) return;
 
       if (data.active) {
@@ -762,7 +877,7 @@ export default {
       } else {
         image.annotating.splice(image.annotating.indexOf(data.username), 1);
       }
-    }
+    },
   },
   watch: {
     tab(tab) {
@@ -819,7 +934,7 @@ export default {
           this.getExports();
         }, 1000);
       }
-    }
+    },
   },
   beforeRouteUpdate() {
     this.dataset.id = parseInt(this.identifier);
@@ -829,7 +944,7 @@ export default {
     let tab = localStorage.getItem("dataset/tab");
     let order = localStorage.getItem("dataset/order");
     let sideWidth = localStorage.getItem("dataset/sideWidth");
-    
+
     if (sideWidth !== null) this.sidebar.width = parseInt(sideWidth);
     if (tab !== null) this.tab = tab;
     if (order !== null) this.order = order;
@@ -844,7 +959,7 @@ export default {
   destroyed() {
     window.removeEventListener("mouseup", this.stopDrag);
     window.removeEventListener("mousedown", this.startDrag);
-  }
+  },
 };
 </script>
 
@@ -901,5 +1016,10 @@ export default {
   background-color: #383c4a;
   padding: 0 5px 2px 5px;
   overflow: auto;
+}
+
+.category-badge {
+  float: left;
+  margin: 0 2px 5px 0;
 }
 </style>

@@ -128,6 +128,12 @@
           v-show="mode == 'segment'"
           style="overflow: auto; max-height: 100%"
         >
+
+          <p class="text-center" style="color: lightgray">
+            All the categories
+            <strong style="color: black">{{ categories }}</strong>
+          </p>  
+
           <Category
             v-for="(category, index) in categories"
             :key="category.id + '-category'"

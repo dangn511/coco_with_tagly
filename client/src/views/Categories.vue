@@ -32,7 +32,15 @@
               data-toggle="modal"
               data-target="#createCategories"
             >
-              Create
+              Create annotation category
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              data-toggle="modal"
+              data-target="#createBatchCategories"
+            >
+              Create batch category
             </button>
             <button type="button" class="btn btn-secondary" @click="updatePage">
               Refresh
@@ -63,7 +71,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Creating a Category</h5>
+            <h5 class="modal-title">Creating an Annotation Category</h5>
             <button
               type="button"
               class="close"
@@ -119,7 +127,83 @@
               :class="{disabled: !isFormValid}"
               @click="createCategory"
             >
-              Create Category
+              Create Annotation Category
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO: edit logic to make batch category -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="createBatchCategories">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Creating a Batch Category</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>Name:</label>
+                <input
+                  v-model="newCategoryName"
+                  class="form-control"
+                  :class="{'is-invalid': newCategoryName.trim().length === 0}"
+                  required="true"
+                  placeholder="Name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Supercategory:</label>
+                <input
+                  v-model="newCategorySupercategory"
+                  class="form-control"
+                  placeholder="Supercategory"
+                />
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Color:</label>
+                <div class="col-sm-9">
+                  <input v-model="newCategoryColor" type="color" class="form-control" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <KeypointsDefinition ref="keypoints"
+                  v-model="newCategoryKeypoint"
+                  element-id="keypoints"
+                  placeholder="Add a keypoint"
+                ></KeypointsDefinition>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              :disabled="!isFormValid"
+              :class="{disabled: !isFormValid}"
+              @click="createCategory"
+            >
+              Create Batch Category
             </button>
             <button
               type="button"

@@ -1,8 +1,6 @@
 .pytest_cache/*
 .cache/*
 .idea/*
-datasets/*
-!datasets/.gitkeep
 .history/*
 .vscode/*
 __pycache__
