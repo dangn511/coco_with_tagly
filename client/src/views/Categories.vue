@@ -162,9 +162,9 @@
               <div class="form-group">
                 <label>Name:</label>
                 <input
-                  v-model="newCategoryName"
+                  v-model="newBatchCategoryName"
                   class="form-control"
-                  :class="{'is-invalid': newCategoryName.trim().length === 0}"
+                  :class="{'is-invalid': newBatchCategoryName.trim().length === 0}"
                   required="true"
                   placeholder="Name"
                 />
@@ -173,7 +173,7 @@
               <div class="form-group">
                 <label>Supercategory:</label>
                 <input
-                  v-model="newCategorySupercategory"
+                  v-model="newBatchCategorySupercategory"
                   class="form-control"
                   placeholder="Supercategory"
                 />
@@ -182,13 +182,13 @@
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Color:</label>
                 <div class="col-sm-9">
-                  <input v-model="newCategoryColor" type="color" class="form-control" />
+                  <input v-model="newBatchCategoryColor" type="color" class="form-control" />
                 </div>
               </div>
 
               <div class="form-group">
                 <KeypointsDefinition ref="keypoints"
-                  v-model="newCategoryKeypoint"
+                  v-model="newBatchCategoryKeypoint"
                   element-id="keypoints"
                   placeholder="Add a keypoint"
                 ></KeypointsDefinition>
@@ -201,7 +201,7 @@
               class="btn btn-primary"
               :disabled="!isFormValid"
               :class="{disabled: !isFormValid}"
-              @click="createCategory"
+              @click="createBatchCategory"
             >
               Create Batch Category
             </button>
@@ -288,6 +288,14 @@ export default {
         edges: [],
         colors: []
       },
+      newBatchCategoryName: "",
+      newBatchCategorySupercategory: "",
+      newBatchCategoryColor: null,
+      newBatchCategoryKeypoint: {
+        labels: [],
+        edges: [],
+        colors: []
+      },
       categories: [],
       status: {
         data: { state: true, message: "Loading categories" }
@@ -350,6 +358,33 @@ export default {
           );
         });
     },
+
+    createBatchCategory() {
+      if (this.newBatchCategoryName.length < 1) return;
+
+      Category.create({
+        name: this.newBatchCategoryName,
+        supercategory: this.newBatchCategorySupercategory,
+        color: this.newBatchCategoryColor,
+        keypoint_labels: this.newBatchCategoryKeypoint.labels,
+        keypoint_edges: this.newBatchCategoryKeypoint.edges,
+        keypoint_colors: this.newBatchCategoryKeypoint.colors,
+      })
+        .then(() => {
+          this.newBatchCategoryName = "";
+          this.newBatchCategorySupercategory = "";
+          this.newBatchCategoryColor = null;
+          this.newBatchCategoryKeypoint = {};
+          this.updatePage();
+        })
+        .catch(error => {
+          this.axiosReqestError(
+            "Creating Category",
+            error.response.data.message
+          );
+        });
+    },
+
     previousPage() {
       this.page -= 1;
       if (this.page < 1) {

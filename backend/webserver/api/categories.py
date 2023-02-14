@@ -12,6 +12,7 @@ api = Namespace('category', description='Category related operations')
 
 create_category = reqparse.RequestParser()
 create_category.add_argument('name', required=True, location='json')
+create_category.add_argument('category_type', location='json')
 create_category.add_argument('supercategory', location='json')
 create_category.add_argument('color', location='json')
 create_category.add_argument('metadata', type=dict, location='json')
@@ -24,6 +25,7 @@ create_category.add_argument(
 
 update_category = reqparse.RequestParser()
 update_category.add_argument('name', required=True, location='json')
+update_category.add_argument('category_type', location='json')
 update_category.add_argument('supercategory', location='json')
 update_category.add_argument('color', location='json')
 update_category.add_argument('metadata', type=dict, location='json')
@@ -50,6 +52,7 @@ class Category(Resource):
         """ Creates a category """
         args = create_category.parse_args()
         name = args.get('name')
+        category_type = args.get('category_type')
         supercategory = args.get('supercategory')
         metadata = args.get('metadata', {})
         color = args.get('color')
@@ -60,6 +63,7 @@ class Category(Resource):
         try:
             category = CategoryModel(
                 name=name,
+                category_type=category_type,
                 supercategory=supercategory,
                 color=color,
                 metadata=metadata,
@@ -114,6 +118,7 @@ class Category(Resource):
 
         args = update_category.parse_args()
         name = args.get('name')
+        category_type = args.get('category_type', category.category_type)
         supercategory = args.get('supercategory', category.supercategory)
         color = args.get('color', category.color)
         metadata = args.get('metadata', category.metadata)
@@ -124,6 +129,7 @@ class Category(Resource):
         # check if there is anything to update
         if category.name == name \
                 and category.supercategory == supercategory \
+                and category.category_type == category_type \
                 and category.color == color \
                 and category.keypoint_edges == keypoint_edges \
                 and category.keypoint_labels == keypoint_labels \
@@ -138,6 +144,7 @@ class Category(Resource):
         # check if the name to update exits already in db
         # @ToDo: Is it necessary to allow equal category names among different creators?
         category.name = name
+        category.category_type = category_type
         category.supercategory = supercategory
         category.color = color
         category.keypoint_edges = keypoint_edges
@@ -147,6 +154,7 @@ class Category(Resource):
         try:
             category.update(
                 name=category.name,
+                category_type=category.category_type,
                 supercategory=category.supercategory,
                 color=category.color,
                 metadata=category.metadata,

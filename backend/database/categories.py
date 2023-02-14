@@ -7,11 +7,12 @@ import imantics as im
 
 class CategoryModel(DynamicDocument):
 
-    COCO_PROPERTIES = ["id", "name", "supercategory", "color", "metadata",\
+    COCO_PROPERTIES = ["id", "name", "category_type", "supercategory", "color", "metadata",\
                        "keypoint_edges", "keypoint_labels", "keypoint_colors"]
 
     id = SequenceField(primary_key=True)
     name = StringField(required=True, unique_with=['creator'])
+    category_type = StringField(default='')
     supercategory = StringField(default='')
     color = StringField(default=None)
     metadata = DictField(default={})
@@ -59,6 +60,7 @@ class CategoryModel(DynamicDocument):
         """ Generates imantics category object """
         data = {
             'name': self.name,
+            'category_type': self.category_type,
             'color': self.color,
             'parent': self.supercategory,
             'metadata': self.metadata,

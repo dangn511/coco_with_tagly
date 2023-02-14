@@ -1,3 +1,13 @@
+# Ongoing
+
+This is my own notes for keeping track of where everything is
+
+### API routing
+
+All found in `_init_.py`
+
+Each python find will have a namespace, search all for Namespace
+
 <p align="center"><img src="https://i.imgur.com/AA7IdbQ.png"></p>
 
 <p align="center">
