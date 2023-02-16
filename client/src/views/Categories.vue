@@ -57,11 +57,18 @@
           <Pagination :pages="pages" @pagechange="updatePage" />
 
           <div class="row">
-            <CategoryCard
+            <!-- <CategoryCard
               v-for="category in categories"
               :key="category.id"
               :category="category"
+            /> -->
+            <template v-for="category in categories">
+              <CategoryCard
+              v-if="categories.length > 1"
+              :key="category.id"
+              :category="category"
             />
+            </template>
           </div>
         </div>
       </div>
@@ -199,8 +206,8 @@
             <button
               type="button"
               class="btn btn-primary"
-              :disabled="!isFormValid"
-              :class="{disabled: !isFormValid}"
+              :disabled="!isBatchFormValid"
+              :class="{disabled: !isBatchFormValid}"
               @click="createBatchCategory"
             >
               Create Batch Category
@@ -310,6 +317,15 @@ export default {
         this.$refs.keypoints &&
         this.$refs.keypoints.valid
       );
+    },
+
+    isBatchFormValid() {
+      return (
+        this.newBatchCategoryName.length !== 0 &&
+        this.$refs &&
+        this.$refs.keypoints &&
+        this.$refs.keypoints.valid
+      );
     }
   },
   methods: {
@@ -338,6 +354,7 @@ export default {
 
       Category.create({
         name: this.newCategoryName,
+        category_type: "annotation",
         supercategory: this.newCategorySupercategory,
         color: this.newCategoryColor,
         keypoint_labels: this.newCategoryKeypoint.labels,
@@ -364,6 +381,7 @@ export default {
 
       Category.create({
         name: this.newBatchCategoryName,
+        category_type: "batch",
         supercategory: this.newBatchCategorySupercategory,
         color: this.newBatchCategoryColor,
         keypoint_labels: this.newBatchCategoryKeypoint.labels,
