@@ -145,7 +145,8 @@
             class="sidebar-section"
             :style="{ 'max-height': mode == 'label' ? '100%' : '57%' }"
           > -->
-          <p class="text-center" style="color: lightgray">
+
+          <!-- <p class="text-center" style="color: lightgray">
             All the categories
             <strong style="color: black">{{ categories }}</strong>
           </p>
@@ -153,7 +154,8 @@
           <p class="text-center" style="color: lightgray">
             the whole response allData
             <strong style="color: black">{{ allData }}</strong>
-          </p>
+          </p> -->
+
           <!-- <div
               v-show="mode == 'segment'"
               style="overflow: auto; max-height: 100%"
@@ -181,13 +183,23 @@
               ref="category"
             />
           </div> -->
+          <p class="text-center">
+            Displaying only categories for batch tagging
+          </p>
 
-          <span v-for="(category, index) in categories" :key="index"
+          <template v-for="(category, index) in categories">
+            <span v-if="category.category_type == 'batch'" :key="index"
+            class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
+            {{ category.name }}
+          </span>
+          </template>
+
+          <!-- <span v-for="(category, index) in categories" :key="index"
             class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
             {{ category.name }}
           </span>
 
-          <p class="text-center" style="color: black">Category cards</p>
+          <p class="text-center" style="color: black">Category cards</p> -->
 
           <!-- <div>
             <Category
@@ -197,8 +209,8 @@
               ref="category"
             />
           </div> -->
-
-          <p class="text-center" style="color: black">CLabel cards</p>
+<!-- 
+          <p class="text-center" style="color: black">CLabel cards</p> -->
 
           <!-- <div
               v-show="mode == 'label'"
@@ -223,7 +235,9 @@
           </p> -->
 
           <div v-else>
+            <div class="row justify-content-md-center">
             <Pagination :pages="pages" @pagechange="updatePage" />
+            </div>
             <div class="row">
               <ImageCardBatch v-for="image in images" :key="image.id" :image="image" />
             </div>

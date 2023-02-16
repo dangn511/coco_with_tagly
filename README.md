@@ -8,6 +8,10 @@ All found in `_init_.py`
 
 Each python find will have a namespace, search all for Namespace
 
+### TODO
+
+Display only annotation-type categories in the img annotation screen
+
 <p align="center"><img src="https://i.imgur.com/AA7IdbQ.png"></p>
 
 <p align="center">

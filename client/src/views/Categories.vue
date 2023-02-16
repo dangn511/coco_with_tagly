@@ -1,19 +1,12 @@
 <template>
   <div>
     <div style="padding-top: 55px" />
-    <div
-      class="album py-5 bg-light"
-      style="overflow: auto; height: calc(100vh - 55px)"
-    >
+    <div class="album py-5 bg-light" style="overflow: auto; height: calc(100vh - 55px)">
       <div class="container">
         <h2 class="text-center">
           Categories
-          <i
-            class="fa fa-question-circle help-icon"
-            data-toggle="modal"
-            data-target="#helpCategories"
-            aria-hidden="true"
-          />
+          <i class="fa fa-question-circle help-icon" data-toggle="modal" data-target="#helpCategories"
+            aria-hidden="true" />
         </h2>
 
         <p class="text-center">
@@ -21,25 +14,11 @@
         </p>
 
         <div class="row justify-content-md-center">
-          <div
-            class="col-md-auto btn-group"
-            role="group"
-            style="padding-bottom: 20px"
-          >
-            <button
-              type="button"
-              class="btn btn-success"
-              data-toggle="modal"
-              data-target="#createCategories"
-            >
+          <div class="col-md-auto btn-group" role="group" style="padding-bottom: 20px">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createCategories">
               Create annotation category
             </button>
-            <button
-              type="button"
-              class="btn btn-success"
-              data-toggle="modal"
-              data-target="#createBatchCategories"
-            >
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBatchCategories">
               Create batch category
             </button>
             <button type="button" class="btn btn-secondary" @click="updatePage">
@@ -56,19 +35,30 @@
         <div v-else>
           <Pagination :pages="pages" @pagechange="updatePage" />
 
-          <div class="row">
+          <div>
+            <h5 class="text-center">
+              Annotation categories
+            </h5>
             <!-- <CategoryCard
-              v-for="category in categories"
-              :key="category.id"
-              :category="category"
-            /> -->
-            <template v-for="category in categories">
-              <CategoryCard
-              v-if="categories.length > 1"
-              :key="category.id"
-              :category="category"
-            />
-            </template>
+                  v-for="category in categories"
+                  :key="category.id"
+                  :category="category"
+                /> -->
+            <div class="row justify-content-md-center">
+              <template v-for="category in categories">
+                <CategoryCard v-if="category.category_type == 'annotation'" :key="category.id" :category="category" />
+              </template>
+            </div>
+
+            <h5 class="text-center">
+              Batch categories
+            </h5>
+
+            <div class="row justify-content-md-center">
+              <template v-for="category in categories">
+                <CategoryCard v-if="category.category_type == 'batch'" :key="category.id" :category="category" />
+              </template>
+            </div>
           </div>
         </div>
       </div>
@@ -79,12 +69,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Creating an Annotation Category</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -92,22 +77,13 @@
             <form>
               <div class="form-group">
                 <label>Name:</label>
-                <input
-                  v-model="newCategoryName"
-                  class="form-control"
-                  :class="{'is-invalid': newCategoryName.trim().length === 0}"
-                  required="true"
-                  placeholder="Name"
-                />
+                <input v-model="newCategoryName" class="form-control"
+                  :class="{ 'is-invalid': newCategoryName.trim().length === 0 }" required="true" placeholder="Name" />
               </div>
 
               <div class="form-group">
                 <label>Supercategory:</label>
-                <input
-                  v-model="newCategorySupercategory"
-                  class="form-control"
-                  placeholder="Supercategory"
-                />
+                <input v-model="newCategorySupercategory" class="form-control" placeholder="Supercategory" />
               </div>
 
               <div class="form-group row">
@@ -118,29 +94,17 @@
               </div>
 
               <div class="form-group">
-                <KeypointsDefinition ref="keypoints"
-                  v-model="newCategoryKeypoint"
-                  element-id="keypoints"
-                  placeholder="Add a keypoint"
-                ></KeypointsDefinition>
+                <KeypointsDefinition ref="keypoints" v-model="newCategoryKeypoint" element-id="keypoints"
+                  placeholder="Add a keypoint"></KeypointsDefinition>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="!isFormValid"
-              :class="{disabled: !isFormValid}"
-              @click="createCategory"
-            >
+            <button type="button" class="btn btn-primary" :disabled="!isFormValid" :class="{ disabled: !isFormValid }"
+              @click="createCategory">
               Create Annotation Category
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
@@ -148,19 +112,13 @@
       </div>
     </div>
 
-    <!-- TODO: edit logic to make batch category -->
 
     <div class="modal fade" tabindex="-1" role="dialog" id="createBatchCategories">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Creating a Batch Category</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -168,22 +126,14 @@
             <form>
               <div class="form-group">
                 <label>Name:</label>
-                <input
-                  v-model="newBatchCategoryName"
-                  class="form-control"
-                  :class="{'is-invalid': newBatchCategoryName.trim().length === 0}"
-                  required="true"
-                  placeholder="Name"
-                />
+                <input v-model="newBatchCategoryName" class="form-control"
+                  :class="{ 'is-invalid': newBatchCategoryName.trim().length === 0 }" required="true"
+                  placeholder="Name" />
               </div>
 
               <div class="form-group">
                 <label>Supercategory:</label>
-                <input
-                  v-model="newBatchCategorySupercategory"
-                  class="form-control"
-                  placeholder="Supercategory"
-                />
+                <input v-model="newBatchCategorySupercategory" class="form-control" placeholder="Supercategory" />
               </div>
 
               <div class="form-group row">
@@ -194,29 +144,17 @@
               </div>
 
               <div class="form-group">
-                <KeypointsDefinition ref="keypoints"
-                  v-model="newBatchCategoryKeypoint"
-                  element-id="keypoints"
-                  placeholder="Add a keypoint"
-                ></KeypointsDefinition>
+                <KeypointsDefinition ref="keypoints" v-model="newBatchCategoryKeypoint" element-id="keypoints"
+                  placeholder="Add a keypoint"></KeypointsDefinition>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="!isBatchFormValid"
-              :class="{disabled: !isBatchFormValid}"
-              @click="createBatchCategory"
-            >
+            <button type="button" class="btn btn-primary" :disabled="!isBatchFormValid"
+              :class="{ disabled: !isBatchFormValid }" @click="createBatchCategory">
               Create Batch Category
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
@@ -229,12 +167,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Categories</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -252,18 +185,14 @@
             provided a name for the category.
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -409,7 +338,7 @@ export default {
         this.page = 1;
       }
     },
-    nextPage: function() {
+    nextPage: function () {
       this.page += 1;
       if (this.page > this.pages) {
         this.page = this.pages;
