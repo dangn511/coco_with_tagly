@@ -12,6 +12,14 @@ Each python find will have a namespace, search all for Namespace
 
 Display only annotation-type categories in the img annotation screen
 
+Figure out what happened with drag select
+
+Allow editing categories from the batch tagging screen
+
+Allow import of tagset (conform with COCO style)
+
+Separate images by session (this one probably have to do backend side)
+
 <p align="center"><img src="https://i.imgur.com/AA7IdbQ.png"></p>
 
 <p align="center">
