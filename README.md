@@ -10,9 +10,11 @@ Each python find will have a namespace, search all for Namespace
 
 ### TODO
 
-Display only annotation-type categories in the img annotation screen
+~~Display only annotation-type categories in the img annotation screen~~
 
-Figure out what happened with drag select
+~~Figure out what happened with drag select~~
+
+Edit images to add attributes: batchAnnotated, batchCategories
 
 Allow editing categories from the batch tagging screen
 

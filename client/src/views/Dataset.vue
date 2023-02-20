@@ -58,9 +58,9 @@
         </div>
 
         <div class="container" v-show="tab == 'testdragselect'">
-          <h1>Drag select demo 6</h1>
+          <h1>Drag select demo with pics</h1>
 
-          <div>
+          <!-- <div>
             <MyDragSel attribute="attr" @change="selectedCards = $event">
               <div v-for="item in [1, 2, 3]" :key="item" :attr="item"
                 class="w-20 h-20 bg-white shadow-md rounded m-2 flex justify-center items-center text-lg text-gray-700"
@@ -76,7 +76,24 @@
               {{ item }}
             </div>
 
+          </div> -->
+
+
+          <!-- <div>
+            <MyDragSel attribute="attr" @change="selectedImages = $event"></MyDragSel>
+            <MyDragSel attribute="attr" @change="selectChange($event)">
+              <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
+                :class="{ 'shadow-outline': selectedImages.includes(String(image.id)) }" />
+            </MyDragSel>
           </div>
+
+          <div class="flex mt-3">
+            <div class="mr-2">Selected items:</div>
+            <div class="mr-2" v-for="item in selectedImages" :key="item">
+              {{ item }}
+            </div>
+
+          </div> -->
 
           <!-- <div>
 
@@ -114,6 +131,7 @@
               </button>
             </li>
           </ol>
+
 
           <!-- <div
             class="sidebar-section"
@@ -218,42 +236,20 @@
 
           <template v-for="(category, index) in categories">
             <span v-if="category.category_type == 'batch'" :key="index"
-              class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
+              class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }"
+              @click="activeBatchCategory = category">
               {{ category.name }}
             </span>
           </template>
 
-          <!-- <span v-for="(category, index) in categories" :key="index"
-            class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
-            {{ category.name }}
-          </span>
+          <div class="flex mt-3">
+            <div class="mr-2">Active category:</div>
+            <div class="mr-2">
+              {{ activeBatchCategory }}
+            </div>
 
-          <p class="text-center" style="color: black">Category cards</p> -->
+          </div>
 
-          <!-- <div>
-            <Category
-              v-for="(category, index) in categories"
-              :key="category.id + '-category'"
-              :index="index"
-              ref="category"
-            />
-          </div> -->
-          <!-- 
-          <p class="text-center" style="color: black">CLabel cards</p> -->
-
-          <!-- <div
-              v-show="mode == 'label'"
-              style="overflow: auto; max-height: 100%"
-            > -->
-          <!-- <div style="overflow: auto; max-height: 100%">
-            <CLabel
-              v-for="category in categories"
-              v-model="image.categoryIds"
-              :key="category.id + '-label'"
-              :category="category"
-            />
-          </div> -->
-          <!-- </div> -->
 
           <p class="text-center" v-if="images.length < 1">
             No images found in directory.
@@ -267,10 +263,27 @@
             <div class="row justify-content-md-center">
               <Pagination :pages="pages" @pagechange="updatePage" />
             </div>
-            <div class="row">
+
+            <!-- <div class="row"> -->
+            <div>
+              <MyDragSel attribute="attr" @change="selectChange($event)">
+                <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
+                  :class="{ 'shadow-outline': selectedImages.includes(String(image.id)) }" />
+              </MyDragSel>
+            </div>
+
+            <div class="flex mt-3">
+              <div class="mr-2">Selected items:</div>
+              <div class="mr-2" v-for="item in selectedImages" :key="item">
+                {{ item }}
+              </div>
+
+            </div>
+
+            <!-- <div class="row">
               <ImageCardBatch v-for="image in images" :key="image.id" :image="image" />
             </div>
-            <Pagination :pages="pages" @pagechange="updatePage" />
+            <Pagination :pages="pages" @pagechange="updatePage" /> -->
 
           </div>
         </div>
@@ -313,19 +326,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                            media-body
-                            pb-3
-                            mb-0
-                            small
-                            lh-125
-                            border-bottom border-gray
-                          ">
+                                media-body
+                                pb-3
+                                mb-0
+                                small
+                                lh-125
+                                border-bottom border-gray
+                              ">
                 <div class="
-                              d-flex
-                              justify-content-between
-                              align-items-center
-                              w-100
-                            ">
+                                  d-flex
+                                  justify-content-between
+                                  align-items-center
+                                  w-100
+                                ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -708,6 +721,9 @@ export default {
       stats: null,
 
       selectedCards: [],
+      selectedImages: [],
+
+      activeBatchCategory: null,
     };
   },
   methods: {
@@ -735,11 +751,13 @@ export default {
       })
         .then((response) => {
           let data = response.data;
-          console.log(data);
+          // console.log(data);
 
           this.allData = data;
 
           this.images = data.images;
+          console.log("images list");
+          console.log(this.images);
           this.dataset = data.dataset;
           this.categories = data.categories;
 
@@ -876,6 +894,14 @@ export default {
       this.mouseDown = false;
       this.sidebar.canResize = false;
     },
+
+    // handling selection of the images
+    selectChange(event) {
+      this.selectedImages = event;
+      console.log("hello selectChange");
+      console.log(event);
+    }
+
   },
   computed: {
     queryAnnotated() {

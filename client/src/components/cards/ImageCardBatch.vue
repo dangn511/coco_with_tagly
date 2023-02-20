@@ -6,7 +6,8 @@
       @mouseover="hover = true"
       @mouseleave="hover = false"
     >
-      <div @click="openAnnotator">
+      <!-- <div @click="openAnnotator"> -->
+      <div>
         <v-lazy-image
           :src="imageUrl"
           :src-placeholder="loaderUrl"
