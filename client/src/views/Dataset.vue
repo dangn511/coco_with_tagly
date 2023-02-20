@@ -58,14 +58,43 @@
         </div>
 
         <div class="container" v-show="tab == 'testdragselect'">
-          <h1>Vue Drag Select Example</h1>
-          <drag-select-container selectorClass="item">
+          <h1>Drag select demo 6</h1>
+
+          <div>
+            <MyDragSel attribute="attr" @change="selectedCards = $event">
+              <div v-for="item in [1, 2, 3]" :key="item" :attr="item"
+                class="w-20 h-20 bg-white shadow-md rounded m-2 flex justify-center items-center text-lg text-gray-700"
+                :class="{ 'shadow-outline': selectedCards.includes(String(item)) }">
+                {{ item }}
+              </div>
+            </MyDragSel>
+          </div>
+
+          <div class="flex mt-3">
+            <div class="mr-2">Selected items:</div>
+            <div class="mr-2" v-for="item in selectedCards" :key="item">
+              {{ item }}
+            </div>
+
+          </div>
+
+          <!-- <div>
+
+            <MyDragSel attribute="attr">
+              <template v-slot="{ selected }">
+                <div v-for="item in [1, 2, 3]" :key="item" :attr="item" class="w-20 h-20"
+                  :class="{ 'shadow-outline': selected.includes(String(item)) }">{{ item }}</div>
+              </template>
+            </MyDragSel>
+
+          </div>> -->
+          <!-- <drag-select-container selectorClass="item">
             <template slot-scope="{ selectedItems }">
               <div v-for="item in 50" :key="item" :class="getClasses(item, selectedItems)" :data-item="item">Item {{
                 item
               }}</div>
             </template>
-          </drag-select-container>
+          </drag-select-container> -->
         </div>
 
         <!-- this one is for displaying tagly style -->
@@ -189,9 +218,9 @@
 
           <template v-for="(category, index) in categories">
             <span v-if="category.category_type == 'batch'" :key="index"
-            class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
-            {{ category.name }}
-          </span>
+              class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
+              {{ category.name }}
+            </span>
           </template>
 
           <!-- <span v-for="(category, index) in categories" :key="index"
@@ -209,7 +238,7 @@
               ref="category"
             />
           </div> -->
-<!-- 
+          <!-- 
           <p class="text-center" style="color: black">CLabel cards</p> -->
 
           <!-- <div
@@ -236,7 +265,7 @@
 
           <div v-else>
             <div class="row justify-content-md-center">
-            <Pagination :pages="pages" @pagechange="updatePage" />
+              <Pagination :pages="pages" @pagechange="updatePage" />
             </div>
             <div class="row">
               <ImageCardBatch v-for="image in images" :key="image.id" :image="image" />
@@ -281,23 +310,22 @@
             </h6>
 
             <div class="media text-muted pt-3" v-for="user in users">
-              <img
-                src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
+              <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                  media-body
-                  pb-3
-                  mb-0
-                  small
-                  lh-125
-                  border-bottom border-gray
-                ">
+                            media-body
+                            pb-3
+                            mb-0
+                            small
+                            lh-125
+                            border-bottom border-gray
+                          ">
                 <div class="
-                    d-flex
-                    justify-content-between
-                    align-items-center
-                    w-100
-                  ">
+                              d-flex
+                              justify-content-between
+                              align-items-center
+                              w-100
+                            ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -589,6 +617,7 @@ import Label from "@/components/annotator/Label";
 import Annotations from "@/models/annotations";
 
 import { mapMutations } from "vuex";
+import MyDragSel from "../components/DragSelect.vue";
 
 let $ = JQuery;
 
@@ -605,6 +634,7 @@ export default {
     PanelToggle,
     PanelDropdown,
     TagsInput,
+    MyDragSel,
   },
   mixins: [toastrs],
   props: {
@@ -676,6 +706,8 @@ export default {
         showNotAnnotated: true,
       },
       stats: null,
+
+      selectedCards: [],
     };
   },
   methods: {
