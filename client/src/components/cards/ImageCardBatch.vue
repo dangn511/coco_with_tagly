@@ -1,5 +1,6 @@
 <template>
-  <div class="col-md-1">
+  <!-- <div class="col-md-1"> -->
+    <div class="col-md-1">
     <div
       class="card mb-0 shadow-sm"
       :class="{'border': annotated, 'border-danger': annotated}"
@@ -12,7 +13,7 @@
           :src="imageUrl"
           :src-placeholder="loaderUrl"
           class="card-img-top"
-          style="width: 100%; display: block"
+          style="width: 100%; display: block; pointer-events: none"
           :style="{'opacity': annotated ? 0.3 : 1}"
         />
       </div>

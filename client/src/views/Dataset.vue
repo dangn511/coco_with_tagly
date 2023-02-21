@@ -58,13 +58,13 @@
         </div>
 
         <div class="container" v-show="tab == 'testdragselect'">
-          <h1>Drag select demo with pics</h1>
+          <h1>Drag select test</h1>
 
-          <!-- <div>
+          <div>
             <MyDragSel attribute="attr" @change="selectedCards = $event">
               <div v-for="item in [1, 2, 3]" :key="item" :attr="item"
                 class="w-20 h-20 bg-white shadow-md rounded m-2 flex justify-center items-center text-lg text-gray-700"
-                :class="{ 'shadow-outline': selectedCards.includes(String(item)) }">
+                :class="{ 'border border-primary': selectedCards.includes(String(item)) }">
                 {{ item }}
               </div>
             </MyDragSel>
@@ -76,7 +76,7 @@
               {{ item }}
             </div>
 
-          </div> -->
+          </div>
 
 
           <!-- <div>
@@ -265,11 +265,13 @@
               <Pagination :pages="pages" @pagechange="updatePage" />
             </div>
 
+            
+
             <!-- <div class="row"> -->
             <div>
-              <MyDragSel attribute="attr" @change="selectChange($event)">
+              <MyDragSel attribute="attr" @change="selectChange($event)" class="d-flex flex-wrap">
                 <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
-                  :class="{ 'shadow-outline': selectedImages.includes(String(image.id)) }" />
+                  :class="{ 'border border-primary': selectedImages.includes(String(image.id)) }" />
               </MyDragSel>
             </div>
 
