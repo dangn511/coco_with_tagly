@@ -8,13 +8,31 @@ All found in `_init_.py`
 
 Each python find will have a namespace, search all for Namespace
 
+### Updating image attribute
+
+Attributes of ImageModel found in database/annotations.py
+
+Look at api/annotator.py to see how to change image's attributes
+
+```
+image_model.update(
+            set__metadata=image.get('metadata', {}),
+            set__annotated=(num_annotations > 0),
+            set__category_ids=image.get('category_ids', []),
+            set__regenerate_thumbnail=True,
+            set__num_annotations=num_annotations
+        )
+
+
 ### TODO
+
+~~Look at api/datasets.py; why images not returning all fields?~~
 
 ~~Display only annotation-type categories in the img annotation screen~~
 
 ~~Figure out what happened with drag select~~
 
-Edit images to add attributes: batchAnnotated, batchCategories
+Edit images to add attributes: batchAnnotated, batchCategories (ongoing)
 
 Allow editing categories from the batch tagging screen
 

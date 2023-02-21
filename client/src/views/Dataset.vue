@@ -234,6 +234,7 @@
             Displaying only categories for batch tagging
           </p>
 
+        <!-- TODO: apply method to unselect active category  -->
           <template v-for="(category, index) in categories">
             <span v-if="category.category_type == 'batch'" :key="index"
               class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }"
@@ -898,8 +899,22 @@ export default {
     // handling selection of the images
     selectChange(event) {
       this.selectedImages = event;
-      console.log("hello selectChange");
-      console.log(event);
+      // console.log("hello selectChange");
+      // console.log(event);
+
+      let imagesToTag = this.images.filter(im => this.selectedImages.includes(String(im.id)));
+      console.log("hello selectChange - imagesToTag");
+      console.log(imagesToTag);
+
+      if (this.activeBatchCategory != null) {
+        // for (var im of imagesToTag) {
+
+        // }
+
+        imagesToTag.forEach(item => item['batchCategory'] = this.activeBatchCategory);
+
+        console.log(imagesToTag);
+      }
     }
 
   },

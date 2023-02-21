@@ -27,6 +27,10 @@ class AnnotatorData(Resource):
         Called when saving data from the annotator client
         """
         data = request.get_json(force=True)
+
+        print("from api/annotator.py")
+        print(data)
+
         image = data.get('image')
         dataset = data.get('dataset')
         image_id = image.get('id')

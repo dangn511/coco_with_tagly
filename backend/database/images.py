@@ -60,6 +60,10 @@ class ImageModel(DynamicDocument):
     events = EmbeddedDocumentListField(Event)
     regenerate_thumbnail = BooleanField(default=False)
 
+    # this is for batch tagging
+    batch_annotated = BooleanField(default=False)
+    batch_annotations = ListField(default=[])
+
     @classmethod
     def create_from_path(cls, path, dataset_id=None):
 

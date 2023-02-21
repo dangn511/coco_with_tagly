@@ -585,6 +585,8 @@ export default {
         .get("/api/annotator/data/" + this.image.id)
         .then(response => {
           let data = response.data;
+          console.log("all response data");
+          console.log(data);
 
           this.loading.data = false;
           // Set image data

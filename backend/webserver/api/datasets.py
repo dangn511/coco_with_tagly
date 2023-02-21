@@ -437,9 +437,12 @@ class DatasetDataId(Resource):
             query_build &= (Q(**query_dict_1) | Q(**query_dict_2))
 
         # Perform mongodb query
+        # images = current_user.images \
+        #     .filter(query_build) \
+        #     .order_by(order).only('id', 'file_name', 'annotating', 'annotated', 'num_annotations')
         images = current_user.images \
             .filter(query_build) \
-            .order_by(order).only('id', 'file_name', 'annotating', 'annotated', 'num_annotations')
+            .order_by(order)
         
         total = images.count()
         pages = int(total/per_page) + 1
