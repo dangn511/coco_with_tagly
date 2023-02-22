@@ -234,7 +234,7 @@
             Displaying only categories for batch tagging
           </p>
 
-        <!-- TODO: apply method to unselect active category  -->
+          <!-- TODO: apply method to unselect active category  -->
           <template v-for="(category, index) in categories">
             <span v-if="category.category_type == 'batch'" :key="index"
               class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }"
@@ -265,7 +265,7 @@
               <Pagination :pages="pages" @pagechange="updatePage" />
             </div>
 
-            
+
 
             <!-- <div class="row"> -->
             <div>
@@ -329,19 +329,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                media-body
-                                pb-3
-                                mb-0
-                                small
-                                lh-125
-                                border-bottom border-gray
-                              ">
+                                    media-body
+                                    pb-3
+                                    mb-0
+                                    small
+                                    lh-125
+                                    border-bottom border-gray
+                                  ">
                 <div class="
-                                  d-flex
-                                  justify-content-between
-                                  align-items-center
-                                  w-100
-                                ">
+                                      d-flex
+                                      justify-content-between
+                                      align-items-center
+                                      w-100
+                                    ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -617,6 +617,7 @@
 <script>
 import toastrs from "@/mixins/toastrs";
 import Dataset from "@/models/datasets";
+import ImageAPI from "@/models/image";
 import Export from "@/models/exports";
 import ImageCard from "@/components/cards/ImageCard";
 import ImageCardBatch from "@/components/cards/ImageCardBatch";
@@ -904,18 +905,52 @@ export default {
       // console.log("hello selectChange");
       // console.log(event);
 
-      let imagesToTag = this.images.filter(im => this.selectedImages.includes(String(im.id)));
+      var imagesToTag = Array.from(this.images.filter(im => this.selectedImages.includes(String(im.id))));
       console.log("hello selectChange - imagesToTag");
+      // console.log(typeof (imagesToTag))
       console.log(imagesToTag);
 
       if (this.activeBatchCategory != null) {
-        // for (var im of imagesToTag) {
+        for (var im of imagesToTag) {
+          if (!im.batch_annotations.includes(this.activeBatchCategory)) {
 
-        // }
+            im.batch_annotations.push(this.activeBatchCategory)
 
-        imagesToTag.forEach(item => item['batchCategory'] = this.activeBatchCategory);
+            // now to handle the actual API call to update db
 
-        console.log(imagesToTag);
+            var imgID = parseInt(im.id);
+            var categoryInfo = { 'category_id': this.activeBatchCategory.id, 'name': this.activeBatchCategory.name };
+
+            ImageAPI.getCoco(imgID)
+              .then((response) => {
+                console.log("imageAPI getCOCO response");
+                console.log(response);
+              })
+              .catch((error) => {
+                this.axiosReqestError("Loading Dataset", error.response.data.message);
+              })
+              .finally(() => this.removeProcess(process));
+
+            ImageAPI.update(imgID, {
+              category_info: categoryInfo,
+            })
+              .then((response) => {
+                console.log("imageAPI response");
+                console.log(response);
+              })
+              .catch((error) => {
+                this.axiosReqestError("Loading Dataset", error.response.data.message);
+              })
+              .finally(() => this.removeProcess(process));
+
+          };
+        };
+
+        // imagesToTag.forEach(item => item['batch_annotations'].push(this.activeBatchCategory));
+
+        // console.log(imagesToTag);
+
+
       }
     }
 

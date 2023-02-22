@@ -31,11 +31,14 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False)
 
     task.info("Beginning Export (COCO Format)")
 
-    db_categories = CategoryModel.objects(id__in=categories, deleted=False) \
-        .only(*CategoryModel.COCO_PROPERTIES)
+    # db_categories = CategoryModel.objects(id__in=categories, deleted=False) \
+    #     .only(*CategoryModel.COCO_PROPERTIES)
+    # db_images = ImageModel.objects(
+    #     deleted=False, dataset_id=dataset.id).only(
+    #     *ImageModel.COCO_PROPERTIES)
+    db_categories = CategoryModel.objects(id__in=categories, deleted=False)
     db_images = ImageModel.objects(
-        deleted=False, dataset_id=dataset.id).only(
-        *ImageModel.COCO_PROPERTIES)
+        deleted=False, dataset_id=dataset.id)
     db_annotations = AnnotationModel.objects(
         deleted=False, category_id__in=categories)
 

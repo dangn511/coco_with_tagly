@@ -42,6 +42,9 @@ copy_annotations = reqparse.RequestParser()
 copy_annotations.add_argument('category_ids', location='json', type=list,
                               required=False, default=None, help='Categories to copy')
 
+update_batch_category = reqparse.RequestParser()
+update_batch_category.add_argument('category_info', type=dict, required=True)
+
 
 @api.route('/')
 class Images(Resource):
@@ -199,4 +202,40 @@ class ImageCoco(Resource):
             return {"message": "You do not have permission to download the images's annotations"}, 403
 
         return coco_util.get_image_coco(image_id)
+
+@api.route('/batchtag/<int:image_id>')
+class ImageBatchTag(Resource):
+
+    @api.expect(update_batch_category)
+    @login_required
+    def put(self, image_id):
+        """ Returns coco of image and annotations """
+        image = current_user.images.filter(id=image_id, deleted=False).first()
+        
+        if image is None:
+            return {'success': False}, 400
+
+        # if not current_user.can_download(image):
+        #     return {"message": "You do not have permission to download the images's annotations"}, 403
+        args = update_batch_category.parse_args()
+        new_batch_category = args.get('category_info')
+        # print("hello from api/image/batchtag")
+        # print(new_batch_category)
+
+        # APPEND the new category
+        categories = image.batch_annotations
+        # print(old_categories)
+        # double check
+        if new_batch_category not in categories:
+            categories.append(new_batch_category)
+
+
+        # if new_batch_category not in categories:
+        #     categories = categories.append(new_batch_category)
+        #     print(categories)
+
+        image.update(set__batch_annotations=categories, set__batch_annotated=True)
+        # print(categories)
+
+        return {"success": True, 'final': categories}
 

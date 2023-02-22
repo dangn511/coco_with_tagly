@@ -13,8 +13,7 @@
           :src="imageUrl"
           :src-placeholder="loaderUrl"
           class="card-img-top"
-          style="width: 100%; display: block; pointer-events: none"
-          :style="{'opacity': annotated ? 0.3 : 1}"
+          style="width: 100%; display: block; pointer-events: none; min-width: 100px"
         />
       </div>
 
