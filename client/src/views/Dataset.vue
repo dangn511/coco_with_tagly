@@ -70,13 +70,13 @@
             </MyDragSel>
           </div>
 
-          <div class="flex mt-3">
+          <!-- <div class="flex mt-3">
             <div class="mr-2">Selected items:</div>
             <div class="mr-2" v-for="item in selectedCards" :key="item">
               {{ item }}
             </div>
 
-          </div>
+          </div> -->
 
 
           <!-- <div>
@@ -237,19 +237,21 @@
           <!-- TODO: apply method to unselect active category  -->
           <template v-for="(category, index) in categories">
             <span v-if="category.category_type == 'batch'" :key="index"
-              class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }"
+              class="badge badge-pill badge-primary category-badge"
+               :class="{ 'border border-dark border-4': activeBatchCategory == category }"
+               :style="{ 'background-color': category.color}"
               @click="activeBatchCategory = category">
               {{ category.name }}
             </span>
           </template>
 
-          <div class="flex mt-3">
+          <!-- <div class="flex mt-3">
             <div class="mr-2">Active category:</div>
             <div class="mr-2">
               {{ activeBatchCategory }}
             </div>
 
-          </div>
+          </div> -->
 
 
           <p class="text-center" v-if="images.length < 1">
@@ -275,13 +277,13 @@
               </MyDragSel>
             </div>
 
-            <div class="flex mt-3">
+            <!-- <div class="flex mt-3">
               <div class="mr-2">Selected items:</div>
               <div class="mr-2" v-for="item in selectedImages" :key="item">
                 {{ item }}
               </div>
 
-            </div>
+            </div> -->
 
             <!-- <div class="row">
               <ImageCardBatch v-for="image in images" :key="image.id" :image="image" />
@@ -919,17 +921,17 @@ export default {
             // now to handle the actual API call to update db
 
             var imgID = parseInt(im.id);
-            var categoryInfo = { 'category_id': this.activeBatchCategory.id, 'name': this.activeBatchCategory.name };
+            var categoryInfo = this.activeBatchCategory;
 
-            ImageAPI.getCoco(imgID)
-              .then((response) => {
-                console.log("imageAPI getCOCO response");
-                console.log(response);
-              })
-              .catch((error) => {
-                this.axiosReqestError("Loading Dataset", error.response.data.message);
-              })
-              .finally(() => this.removeProcess(process));
+            // ImageAPI.getCoco(imgID)
+            //   .then((response) => {
+            //     console.log("imageAPI getCOCO response");
+            //     console.log(response);
+            //   })
+            //   .catch((error) => {
+            //     this.axiosReqestError("Loading Dataset", error.response.data.message);
+            //   })
+            //   .finally(() => this.removeProcess(process));
 
             ImageAPI.update(imgID, {
               category_info: categoryInfo,

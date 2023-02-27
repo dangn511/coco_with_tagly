@@ -1,7 +1,8 @@
 <template>
   <div style="display: block; height: inherit;">
     
-    <aside v-show="panels.show.left" class="left-panel shadow-lg">
+    <!-- <aside v-show="panels.show.left" class="left-panel shadow-lg"> -->
+    <aside v-show="false" class="left-panel shadow-lg">
       <div v-show="mode == 'segment'">
         <hr />
 
@@ -129,11 +130,11 @@
           style="overflow: auto; max-height: 100%"
         >
 
-          <p class="text-center" style="color: lightgray">
+          <!-- <p class="text-center" style="color: lightgray">
             All the categories
             <strong style="color: black">{{ categories }}</strong>
-          </p>  
-
+          </p>   -->
+            
           <Category
             v-for="(category, index) in categories"
             :key="category.id + '-category'"

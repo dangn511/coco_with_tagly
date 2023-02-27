@@ -46,7 +46,7 @@
                 /> -->
             <div class="row justify-content-md-center">
               <template v-for="category in categories">
-                <CategoryCard v-if="category.category_type == 'annotation'" :key="category.id" :category="category" />
+                <CategoryCard v-if="category.category_type != 'batch'" :key="category.id" :category="category" />
               </template>
             </div>
 

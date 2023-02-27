@@ -32,13 +32,27 @@ image_model.update(
 
 ~~Figure out what happened with drag select~~
 
-Edit images to add attributes: batchAnnotated, batchCategories (ongoing)
+~~Edit images to add attributes: batchAnnotated, batchCategories (ongoing)~~
+
+Bugfix: duplicate batch tagging categories
+
+Bugfix: styling issue on batch tagging tab
+
+Bugfix: Figure out why sometimes cannot use some categories in segmentation
 
 Allow editing categories from the batch tagging screen
 
 Allow import of tagset (conform with COCO style)
 
 Separate images by session (this one probably have to do backend side)
+
+Disable downloading of image from client side
+
+Test multi user functionality
+
+Try playing with Label Studio see if got something else to incorporate
+
+Try playing with ML model integration
 
 <p align="center"><img src="https://i.imgur.com/AA7IdbQ.png"></p>
 

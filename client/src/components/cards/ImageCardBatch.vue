@@ -13,7 +13,7 @@
           :src="imageUrl"
           :src-placeholder="loaderUrl"
           class="card-img-top"
-          style="width: 100%; display: block; pointer-events: none; min-width: 100px"
+          style="width: 100%; display: block; pointer-events: none; min-width: 75px"
         />
       </div>
 
@@ -23,8 +23,8 @@
 
       <!-- this is the texts below image, might add sth later -->
 
-      <!-- <div class="card-body" style="width: 100%" :style="{'opacity': annotated ? 0.3 : 1}">
-        <div class="row" style="width: 100%">
+      <div class="card-body" style="width: 100%" :style="{'opacity': annotated ? 0.3 : 1}">
+        <!-- <div class="row" style="width: 100%">
           <span
             :class="{ 'text-truncate': !hover }"
             style="width: 100%; float: left"
@@ -63,22 +63,16 @@
               Download Image & COCO
             </button>
           </div>
-        </div>
-
+        </div> -->
+        <!-- 
         <div class="row">
-          <p v-show="image.num_annotations > 0">
-            {{ image.num_annotations }} annotation<span
-              v-show="image.num_annotations > 1"
-              >s</span
-            >
-          </p>
-          <p v-show="image.annotated == true && image.num_annotations < 0">Annotated</p>
-          <p v-show="image.annotated == false">No annotations</p>
-        </div>
+          <p v-show="image.batch_annotated == true">Annotated</p>
+          <p v-show="image.batch_annotated == false">No annotations</p>
+        </div> -->
 
         <div class="row">
           <span
-            v-for="(category, index) in image.categories"
+            v-for="(category, index) in image.batch_annotations"
             :key="index"
             class="badge badge-pill badge-primary category-badge"
             :style="{ 'background-color': category.color }"
@@ -86,7 +80,7 @@
             {{ category.name }}
           </span>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
