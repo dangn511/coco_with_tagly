@@ -235,15 +235,22 @@
           </p>
 
           <!-- TODO: apply method to unselect active category  -->
-          <template v-for="(category, index) in categories">
-            <span v-if="category.category_type == 'batch'" :key="index"
-              class="badge badge-pill badge-primary category-badge"
-               :class="{ 'border border-dark border-4': activeBatchCategory == category }"
-               :style="{ 'background-color': category.color}"
-              @click="activeBatchCategory = category">
-              {{ category.name }}
-            </span>
-          </template>
+          <div class="row">
+            <template v-for="(category, index) in categories">
+              <span v-if="category.category_type == 'batch'" :key="index"
+                class="badge badge-pill badge-primary category-badge"
+                :class="{ 'border border-dark border-4': activeBatchCategory == category }"
+                :style="{ 'background-color': category.color }" @click="activeBatchCategory = category">
+                {{ category.name }}
+              </span>
+            </template>
+
+            <!-- <PanelToggle name="Remove category" v-model="removeBatchCategory" /> -->
+            <template>
+              <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
+              <label for="removeCategoryCheckbox"> Remove Category </label>
+            </template>
+          </div>
 
           <!-- <div class="flex mt-3">
             <div class="mr-2">Active category:</div>
@@ -331,19 +338,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                    media-body
-                                    pb-3
-                                    mb-0
-                                    small
-                                    lh-125
-                                    border-bottom border-gray
-                                  ">
+                                                      media-body
+                                                      pb-3
+                                                      mb-0
+                                                      small
+                                                      lh-125
+                                                      border-bottom border-gray
+                                                    ">
                 <div class="
-                                      d-flex
-                                      justify-content-between
-                                      align-items-center
-                                      w-100
-                                    ">
+                                                        d-flex
+                                                        justify-content-between
+                                                        align-items-center
+                                                        w-100
+                                                      ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -724,10 +731,13 @@ export default {
         showAnnotated: true,
         showNotAnnotated: true,
       },
+
       stats: null,
 
       selectedCards: [],
       selectedImages: [],
+
+      removeBatchCategory: false,
 
       activeBatchCategory: null,
     };
@@ -911,41 +921,82 @@ export default {
       console.log("hello selectChange - imagesToTag");
       // console.log(typeof (imagesToTag))
       console.log(imagesToTag);
+      console.log("hello selectChange - this.removeBatchCategory");
+      // console.log(typeof (imagesToTag))
+      console.log(this.removeBatchCategory);
+
+
 
       if (this.activeBatchCategory != null) {
+
         for (var im of imagesToTag) {
-          if (!im.batch_annotations.includes(this.activeBatchCategory)) {
+          // if not removing category
+          if (!this.removeBatchCategory) {
+            if (!im.batch_annotations.some(cat => cat.id == this.activeBatchCategory.id)) {
 
-            im.batch_annotations.push(this.activeBatchCategory)
+              im.batch_annotations.push(this.activeBatchCategory)
 
-            // now to handle the actual API call to update db
 
-            var imgID = parseInt(im.id);
-            var categoryInfo = this.activeBatchCategory;
 
-            // ImageAPI.getCoco(imgID)
-            //   .then((response) => {
-            //     console.log("imageAPI getCOCO response");
-            //     console.log(response);
-            //   })
-            //   .catch((error) => {
-            //     this.axiosReqestError("Loading Dataset", error.response.data.message);
-            //   })
-            //   .finally(() => this.removeProcess(process));
+              // now to handle the actual API call to update db
 
-            ImageAPI.update(imgID, {
-              category_info: categoryInfo,
-            })
-              .then((response) => {
-                console.log("imageAPI response");
-                console.log(response);
+              var imgID = parseInt(im.id);
+              var categoryInfo = this.activeBatchCategory;
+
+              // ImageAPI.getCoco(imgID)
+              //   .then((response) => {
+              //     console.log("imageAPI getCOCO response");
+              //     console.log(response);
+              //   })
+              //   .catch((error) => {
+              //     this.axiosReqestError("Loading Dataset", error.response.data.message);
+              //   })
+              //   .finally(() => this.removeProcess(process));
+
+              ImageAPI.update(imgID, {
+                category_info: categoryInfo,
+                remove_category: this.removeBatchCategory,
               })
-              .catch((error) => {
-                this.axiosReqestError("Loading Dataset", error.response.data.message);
-              })
-              .finally(() => this.removeProcess(process));
+                .then((response) => {
+                  console.log("imageAPI response");
+                  console.log(response);
+                })
+                .catch((error) => {
+                  this.axiosReqestError("Loading Dataset", error.response.data.message);
+                })
+                .finally(() => this.removeProcess(process));
 
-          };
+            }
+          } else {
+            if (im.batch_annotations.some(cat => cat.id == this.activeBatchCategory.id)) {
+              // remove the category
+              for (var i = 0; i < im.batch_annotations.length; i++) {
+                if (im.batch_annotations[i].id == this.activeBatchCategory.id) {
+                  im.batch_annotations.splice(i, 1);
+                  break;
+                }
+              }
+
+              var imgID = parseInt(im.id);
+              var categoryInfo = this.activeBatchCategory;
+
+              ImageAPI.update(imgID, {
+                category_info: categoryInfo,
+                remove_category: this.removeBatchCategory,
+              })
+                .then((response) => {
+                  console.log("imageAPI response");
+                  console.log(response);
+                })
+                .catch((error) => {
+                  this.axiosReqestError("Loading Dataset", error.response.data.message);
+                })
+                .finally(() => this.removeProcess(process));
+            }
+
+          }
+          // if (!im.batch_annotations.includes(this.activeBatchCategory)) {
+
         };
 
         // imagesToTag.forEach(item => item['batch_annotations'].push(this.activeBatchCategory));
@@ -954,6 +1005,7 @@ export default {
 
 
       }
+
     }
 
   },

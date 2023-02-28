@@ -219,6 +219,7 @@ class ImageBatchTag(Resource):
         #     return {"message": "You do not have permission to download the images's annotations"}, 403
         args = update_batch_category.parse_args()
         new_batch_category = args.get('category_info')
+        remove_category = args.get('remove_category')
         # print("hello from api/image/batchtag")
         # print(new_batch_category)
 
@@ -226,8 +227,12 @@ class ImageBatchTag(Resource):
         categories = image.batch_annotations
         # print(old_categories)
         # double check
-        if new_batch_category not in categories:
-            categories.append(new_batch_category)
+        if remove_category == False:
+            if new_batch_category not in categories:
+                categories.append(new_batch_category)
+        else:
+            if new_batch_category in categories:
+                categories.remove(new_batch_category)
 
 
         # if new_batch_category not in categories:

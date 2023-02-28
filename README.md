@@ -40,6 +40,8 @@ Bugfix: styling issue on batch tagging tab
 
 Bugfix: Figure out why sometimes cannot use some categories in segmentation
 
+Bugfix: why bounding box not auto selected
+
 Allow editing categories from the batch tagging screen
 
 Allow import of tagset (conform with COCO style)
