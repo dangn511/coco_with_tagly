@@ -74,13 +74,13 @@
           >
             Share
           </button>
-          <button
+          <!-- <button
             class="dropdown-item"
             @click="onCocoDownloadClick"
             v-show="dataset.permissions.download"
           >
             Download COCO
-          </button>
+          </button> -->
           <hr v-show="dataset.permissions.delete" />
           <button
             class="dropdown-item delete"

@@ -53,12 +53,12 @@
             <button class="btn dropdown-item" @click="openAnnotator">
               Annotate
             </button>
-            <button
+            <!-- <button
               class="btn dropdown-item"
               @click="onDownloadClick"
             >
               Download Image & COCO
-            </button>
+            </button> -->
           </div>
         </div>
 
@@ -121,6 +121,8 @@ export default {
         params: { identifier: this.image.id }
       });
     },
+
+    //TODO: remove this safely
     onDownloadClick() {
       this.downloadURI(
         "/api/image/" + this.image.id + "?asAttachment=true",

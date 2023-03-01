@@ -44,6 +44,7 @@ copy_annotations.add_argument('category_ids', location='json', type=list,
 
 update_batch_category = reqparse.RequestParser()
 update_batch_category.add_argument('category_info', type=dict, required=True)
+update_batch_category.add_argument('remove_category', type=bool, required=True)
 
 
 @api.route('/')
@@ -225,14 +226,14 @@ class ImageBatchTag(Resource):
 
         # APPEND the new category
         categories = image.batch_annotations
+        old_categories = categories
         # print(old_categories)
         # double check
-        if remove_category == False:
-            if new_batch_category not in categories:
-                categories.append(new_batch_category)
-        else:
-            if new_batch_category in categories:
-                categories.remove(new_batch_category)
+        
+        if new_batch_category not in categories:
+            categories.append(new_batch_category)
+        elif new_batch_category in categories:
+            categories.remove(new_batch_category)
 
 
         # if new_batch_category not in categories:
@@ -242,5 +243,5 @@ class ImageBatchTag(Resource):
         image.update(set__batch_annotations=categories, set__batch_annotated=True)
         # print(categories)
 
-        return {"success": True, 'final': categories}
+        return {"success": True, 'removecat': remove_category ,"oldcats": old_categories ,'final': categories, "new": new_batch_category}
 

@@ -32,9 +32,11 @@ image_model.update(
 
 ~~Figure out what happened with drag select~~
 
-~~Edit images to add attributes: batchAnnotated, batchCategories (ongoing)~~
+~~Edit images to add attributes: batchAnnotated, batchCategories~~
 
-Bugfix: duplicate batch tagging categories
+~~Disable downloading of image from client side~~
+
+~~Bugfix: duplicate batch tagging categories~~
 
 Bugfix: styling issue on batch tagging tab
 
@@ -48,11 +50,13 @@ Allow import of tagset (conform with COCO style)
 
 Separate images by session (this one probably have to do backend side)
 
-Disable downloading of image from client side
+- `dataset.permissions.download` seems to govern downloading behavior, look into this
 
 Test multi user functionality
 
 Try playing with Label Studio see if got something else to incorporate
+
+- Keyboard shortcuts
 
 Try playing with ML model integration
 

@@ -118,6 +118,7 @@ export default {
         params: { identifier: this.image.id }
       });
     },
+    //TODO: remove this safely
     onDownloadClick() {
       this.downloadURI(
         "/api/image/" + this.image.id + "?asAttachment=true",
