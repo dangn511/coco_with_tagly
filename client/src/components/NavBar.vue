@@ -40,12 +40,12 @@
         <li class="nav-item" :class="{ active: $route.name === 'categories' }">
           <RouterLink class="nav-link" to="/categories">Categories</RouterLink>
         </li>
-        <li class="nav-item" :class="{ active: $route.name === 'undo' }">
+        <!-- <li class="nav-item" :class="{ active: $route.name === 'undo' }">
           <RouterLink class="nav-link" to="/undo">Undo</RouterLink>
         </li>
         <li class="nav-item" :class="{ active: $route.name === 'tasks' }">
           <RouterLink class="nav-link" to="/tasks">Tasks</RouterLink>
-        </li>
+        </li> -->
         <li
           v-show="$store.getters['user/isAdmin']"
           class="nav-item"
@@ -53,9 +53,9 @@
         >
           <RouterLink class="nav-link d-none d-xl-block" to="/admin/panel">Admin</RouterLink>
         </li>
-        <li class="nav-item d-none d-xl-block">
+        <!-- <li class="nav-item d-none d-xl-block">
           <a class="nav-link" href="/api">API</a>
-        </li>
+        </li> -->
         <li class="nav-item d-none d-xl-block">
           <a
             class="nav-link"

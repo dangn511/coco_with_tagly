@@ -1,13 +1,11 @@
 <template>
   <div class="bg-light">
     <div style="padding-top: 55px" />
-    <div
-      class="album py-5 container"
-      style="overflow: auto; height: calc(100vh - 55px)"
-    >
+    <div class="album py-5 container" style="overflow: auto; height: calc(100vh - 55px)">
       <div class="row">
-        <div class="col-sm text-left">
-          <!-- Change this section to whatever you would like -->
+        <h1>COCO Annotator</h1>
+        <!-- <div class="col-sm text-left">
+
           <h1>COCO Annotator</h1>
           <hr />
           <div v-if="totalUsers === 0">
@@ -34,122 +32,65 @@
               <a href="https://github.com/jsbroks/coco-annotator">Github</a>
             </p>
           </div>
-          <!-- End of section -->
-        </div>
+
+        </div> -->
+      </div>
+      <div class="row">
         <div class="col-sm">
           <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item" v-show="totalUsers !== 0">
-              <a
-                class="nav-link"
-                :class="{ active: tab === 'login' }"
-                id="home-tab"
-                data-toggle="tab"
-                href="#login"
-                role="tab"
-                aria-controls="home"
-                aria-selected="true"
-                @click="tab = 'login'"
-              >
+              <a class="nav-link" :class="{ active: tab === 'login' }" id="home-tab" data-toggle="tab" href="#login"
+                role="tab" aria-controls="home" aria-selected="true" @click="tab = 'login'">
                 Login
               </a>
             </li>
             <li class="nav-item" v-show="showRegistrationForm">
-              <a
-                class="nav-link"
-                :class="{ active: tab === 'register' }"
-                id="contact-tab"
-                data-toggle="tab"
-                href="#register"
-                role="tab"
-                aria-controls="contact"
-                aria-selected="false"
-                @click="tab = 'register'"
-                ref="registerTab"
-              >
+              <a class="nav-link" :class="{ active: tab === 'register' }" id="contact-tab" data-toggle="tab"
+                href="#register" role="tab" aria-controls="contact" aria-selected="false" @click="tab = 'register'"
+                ref="registerTab">
                 Register
               </a>
             </li>
           </ul>
-          <div
-            class="tab-content panel border-bottom border-right border-left text-left"
-          >
-            <div
-              class="tab-pane fade show active"
-              id="login"
-              role="tabpanel"
-              aria-labelledby="login-tab"
-            >
+          <div class="tab-content panel border-bottom border-right border-left text-left">
+            <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
               <form class="vld-parent" ref="loginForm">
                 <div class="form-group">
                   <label>Username</label>
-                  <input
-                    v-model="loginForm.username"
-                    type="text"
-                    class="form-control"
-                    required
-                  />
+                  <input v-model="loginForm.username" type="text" class="form-control" required />
                   <div class="invalid-feedback">Invalid username format</div>
                 </div>
                 <div class="form-group">
                   <label>Password</label>
-                  <input
-                    v-model="loginForm.password"
-                    type="password"
-                    class="form-control"
-                  />
+                  <input v-model="loginForm.password" type="password" class="form-control" />
                 </div>
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-block"
-                  :class="{ disabled: !loginValid }"
-                  @click.prevent="loginUser"
-                >
+                <button type="submit" class="btn btn-primary btn-block" :class="{ disabled: !loginValid }"
+                  @click.prevent="loginUser">
                   Login
                 </button>
               </form>
             </div>
-            <div
-              class="tab-pane fade"
-              id="register"
-              role="tabpanel"
-              aria-labelledby="register-tab"
-            >
+            <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
               <div v-if="!showRegistrationForm">
                 You are not allowed to register new accounts
               </div>
               <form v-else class="vld-parent" ref="registerForm">
                 <div class="form-group" novalidate="">
-                  <label
-                    >Full Name <span class="text-mute">(Optional)</span></label
-                  >
-                  <input
-                    v-model="registerForm.name"
-                    type="text"
-                    class="form-control"
-                  />
+                  <label>Full Name <span class="text-mute">(Optional)</span></label>
+                  <input v-model="registerForm.name" type="text" class="form-control" />
                 </div>
 
                 <div class="form-group">
                   <label>Username</label>
-                  <input
-                    v-model="registerForm.username"
-                    :class="inputUsernameClasses(registerForm.username)"
-                    type="text"
-                    class="form-control"
-                    required
-                  />
+                  <input v-model="registerForm.username" :class="inputUsernameClasses(registerForm.username)" type="text"
+                    class="form-control" required />
                   <div class="invalid-feedback">Invalid username format</div>
                 </div>
 
                 <div class="form-group">
                   <label>Password</label>
-                  <input
-                    v-model="registerForm.password"
-                    :class="inputPasswordClasses(registerForm.password)"
-                    type="password"
-                    class="form-control"
-                    required
-                  />
+                  <input v-model="registerForm.password" :class="inputPasswordClasses(registerForm.password)"
+                    type="password" class="form-control" required />
                   <div class="invalid-feedback">
                     Minimum length of 5 characters.
                   </div>
@@ -157,23 +98,14 @@
 
                 <div class="form-group">
                   <label>Confirm Password</label>
-                  <input
-                    v-model="registerForm.confirmPassword"
-                    :class="{
-                      'is-valid':
-                        registerForm.confirmPassword.length > 0 &&
-                        registerForm.confirmPassword === registerForm.password
-                    }"
-                    type="password"
-                    class="form-control"
-                  />
+                  <input v-model="registerForm.confirmPassword" :class="{
+                    'is-valid':
+                      registerForm.confirmPassword.length > 0 &&
+                      registerForm.confirmPassword === registerForm.password
+                  }" type="password" class="form-control" />
                 </div>
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-block"
-                  :class="{ disabled: !registerValid }"
-                  @click.prevent="registerUser"
-                >
+                <button type="submit" class="btn btn-primary btn-block" :class="{ disabled: !registerValid }"
+                  @click.prevent="registerUser">
                   Register
                 </button>
               </form>
@@ -355,7 +287,7 @@ export default {
       immediate: true
     }
   },
-  mounted() {}
+  mounted() { }
 };
 </script>
 

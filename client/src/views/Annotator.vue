@@ -2,7 +2,7 @@
   <div style="display: block; height: inherit;">
     
     <!-- <aside v-show="panels.show.left" class="left-panel shadow-lg"> -->
-    <aside v-show="panels.show.left" class="left-panel shadow-lg">
+    <aside v-show="false" class="left-panel shadow-lg">
       <div v-show="mode == 'segment'">
         <hr />
 
