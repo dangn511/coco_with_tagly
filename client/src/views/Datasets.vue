@@ -23,6 +23,13 @@
           <strong>{{ datasets.length }}</strong> datasets available
         </p>
 
+        <!-- <br>
+        <p class="text-center">
+          all
+          <br>
+          <strong>{{ datasets }}</strong>
+        </p> -->
+
         <div class="row justify-content-md-center">
           <div
             class="col-md-auto btn-group"
@@ -227,6 +234,7 @@ export default {
         page: page
       }).then(response => {
         this.datasets = response.data.datasets;
+        console.log(this.datasets);
         this.categories = response.data.categories;
         this.subdirectories = response.data.subdirectories;
         this.pages = response.data.pagination.pages;

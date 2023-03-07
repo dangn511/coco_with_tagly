@@ -36,12 +36,17 @@ export default {
   },
   data() {
     return {
-      intersected: []
+      intersected: [],
+      rightClicked: []
     };
   },
   watch: {
     intersected(i) {
       this.$emit("change", i);
+    },
+    rightClicked(i) {
+      this.$emit("rightclicked", i);
+      // console.log("emitting rightclicked")
     }
   },
   mounted() {
@@ -139,8 +144,14 @@ export default {
       box.remove();
     }
 
+    function onRightClick() {
+      self.rightClicked = self.intersected;
+    }
+
+
     container.addEventListener("mousedown", startDrag);
     container.addEventListener("touchstart", touchStart);
+    container.addEventListener("contextmenu", onRightClick);
 
     document.addEventListener("mouseup", endDrag);
     document.addEventListener("touchend", endDrag);

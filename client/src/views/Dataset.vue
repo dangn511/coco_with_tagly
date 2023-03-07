@@ -2,26 +2,28 @@
   <div @mousemove="mouseMove">
     <div style="padding-top: 55px" />
 
-    <div class="bg-light" :style="{ 'margin-left': sidebar.width + 'px' }">
+    <!-- <div class="bg-light" :style="{ 'margin-left': sidebar.width + 'px' }"> -->
+    <div class="bg-light">
       <nav class="nav border-bottom shadow-sm" style="background-color: #4b5162">
-        
-        <a class="btn tab" @click="tab = 'batchtag'" :style="{ color: tab == 'batchtag' ? 'white' : 'darkgray' }">
-          <i class="fa fa-list" aria-hidden="true"></i> Batch tagging
-        </a>
-        <a class="btn tab" @click="tab = 'images'" :style="{ color: tab == 'images' ? 'white' : 'darkgray' }">
-          <i class="fa fa-picture-o" aria-hidden="true"></i> Object Annotation
-        </a>
-        <a class="btn tab" @click="tab = 'exports'" :style="{ color: tab == 'exports' ? 'white' : 'darkgray' }">
-          <i class="fa fa-share" aria-hidden="true"></i> Exports
-        </a>
-        <a class="btn tab" @click="tab = 'analytics'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
-          <i class="fa fa-users" aria-hidden="true"></i> Analytics
-        </a>
-        <a class="btn tab" @click="tab = 'searchbar'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
-          <i class="fa fa-users" aria-hidden="true"></i> Search
-        </a>
-<!-- 
-        <a class="btn tab" @click="tab = 'members'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+        <div class="px-2" style="float: right">
+
+          <a class="btn tab" @click="tab = 'batchtag'" :style="{ color: tab == 'batchtag' ? 'white' : 'darkgray' }">
+            <i class="fa fa-list" aria-hidden="true"></i> Batch tagging
+          </a>
+          <a class="btn tab" @click="tab = 'images'" :style="{ color: tab == 'images' ? 'white' : 'darkgray' }">
+            <i class="fa fa-picture-o" aria-hidden="true"></i> Object Annotation
+          </a>
+          <a class="btn tab" @click="tab = 'exports'" :style="{ color: tab == 'exports' ? 'white' : 'darkgray' }">
+            <i class="fa fa-share" aria-hidden="true"></i> Exports
+          </a>
+          <a class="btn tab" @click="tab = 'analytics'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+            <i class="fa fa-users" aria-hidden="true"></i> Analytics
+          </a>
+          <a class="btn tab" @click="tab = 'searchbar'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+            <i class="fa fa-users" aria-hidden="true"></i> Search
+          </a>
+
+          <!-- <a class="btn tab" @click="tab = 'members'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
           <i class="fa fa-users" aria-hidden="true"></i> Members
         </a>
         <a class="btn tab" @click="tab = 'statistics'" :style="{ color: tab == 'statistics' ? 'white' : 'darkgray' }">
@@ -34,6 +36,7 @@
           :style="{ color: tab == 'testdragselect' ? 'white' : 'darkgray' }">
           <i class="fa fa-list" aria-hidden="true"></i> Test dragsel
         </a> -->
+        </div>
       </nav>
 
       <div class="bg-light text-left" style="overflow: auto; height: calc(100vh - 100px); margin: 10px">
@@ -65,7 +68,7 @@
           </div>
         </div>
 
-        <div class="container" v-show="tab == 'testdragselect'">
+        <!-- <div class="container" v-show="tab == 'testdragselect'">
           <h1>Drag select test</h1>
 
           <div>
@@ -76,9 +79,9 @@
                 {{ item }}
               </div>
             </MyDragSel>
-          </div>
+          </div> -->
 
-          <!-- <div class="flex mt-3">
+        <!-- <div class="flex mt-3">
             <div class="mr-2">Selected items:</div>
             <div class="mr-2" v-for="item in selectedCards" :key="item">
               {{ item }}
@@ -87,7 +90,7 @@
           </div> -->
 
 
-          <!-- <div>
+        <!-- <div>
             <MyDragSel attribute="attr" @change="selectedImages = $event"></MyDragSel>
             <MyDragSel attribute="attr" @change="selectChange($event)">
               <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
@@ -103,7 +106,7 @@
 
           </div> -->
 
-          <!-- <div>
+        <!-- <div>
 
             <MyDragSel attribute="attr">
               <template v-slot="{ selected }">
@@ -113,14 +116,14 @@
             </MyDragSel>
 
           </div>> -->
-          <!-- <drag-select-container selectorClass="item">
+        <!-- <drag-select-container selectorClass="item">
             <template slot-scope="{ selectedItems }">
               <div v-for="item in 50" :key="item" :class="getClasses(item, selectedItems)" :data-item="item">Item {{
                 item
               }}</div>
             </template>
           </drag-select-container> -->
-        </div>
+        <!-- </div> -->
 
         <!-- this one is for displaying tagly style -->
 
@@ -242,22 +245,54 @@
             Displaying only categories for batch tagging
           </p>
 
-          <!-- TODO: apply method to unselect active category  -->
-          <div class="row">
-            <template v-for="(category, index) in categories">
-              <span v-if="category.category_type == 'batch'" :key="index"
-                class="badge badge-pill badge-primary category-badge"
-                :class="{ 'border border-dark border-4': activeBatchCategory == category }"
-                :style="{ 'background-color': category.color }" @click="activeBatchCategory = category">
-                {{ category.name }}
-              </span>
-            </template>
+          <div class="row mx-2">
+            <div class="col-3 border-left border-right">
+              <!-- Placeholder dropdown -->
+              <select v-model="selectedDataset">
+                <option v-for="mDataset in allDatasets" :value="mDataset" :key="mDataset.id">{{ mDataset.name }}</option>
 
-            <!-- <PanelToggle name="Remove category" v-model="removeBatchCategory" /> -->
-            <template>
-              <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
-              <label for="removeCategoryCheckbox"> Remove Category </label>
-            </template>
+              </select>
+
+              <button type="button" class="btn btn-success btn-xs" @click="redirectDataset">
+                Go
+              </button>
+
+            </div>
+            <div class="col-6 border-left border-right">
+              <template v-for="(category, index) in categories">
+                <span v-if="category.category_type == 'batch'" :key="index"
+                  class="badge badge-pill badge-primary category-badge"
+                  :class="{ 'border border-dark border-4': activeBatchCategory == category }"
+                  :style="{ 'background-color': category.color }" @click="activeBatchCategory = category">
+                  {{ category.name }}
+                </span>
+              </template>
+
+              <!-- <PanelToggle name="Remove category" v-model="removeBatchCategory" /> -->
+              <template>
+                <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
+                <label for="removeCategoryCheckbox"> Remove Category </label>
+              </template>
+            </div>
+            <div class="col-3 border-left border-right">
+              <button type="button" class="btn btn-secondary" @click="createScanTask">
+                <div v-if="scan.id != null" class="progress">
+                  <div class="progress-bar bg-secondary" :style="{ width: `${scan.progress}%` }">
+                    Scanning
+                  </div>
+                </div>
+                <div v-else>Scan</div>
+              </button>
+
+              <button type="button" class="btn btn-info" @click="exportModal">
+                <div v-if="exporting.id != null" class="progress">
+                  <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
+                    Exporting
+                  </div>
+                </div>
+                <div v-else>Export COCO</div>
+              </button>
+            </div>
           </div>
 
           <!-- <div class="flex mt-3">
@@ -286,7 +321,8 @@
 
             <!-- <div class="row"> -->
             <div>
-              <MyDragSel attribute="attr" @change="selectChange($event)" class="d-flex flex-wrap">
+              <MyDragSel attribute="attr" @change="selectChange($event)" @rightclicked="showZoomModal($event)" @contextmenu.native.prevent
+                class="d-flex flex-wrap">
                 <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
                   :class="{ 'border border-primary': selectedImages.includes(String(image.id)) }" />
               </MyDragSel>
@@ -346,19 +382,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                                      media-body
-                                                      pb-3
-                                                      mb-0
-                                                      small
-                                                      lh-125
-                                                      border-bottom border-gray
-                                                    ">
+                                                                      media-body
+                                                                      pb-3
+                                                                      mb-0
+                                                                      small
+                                                                      lh-125
+                                                                      border-bottom border-gray
+                                                                    ">
                 <div class="
-                                                        d-flex
-                                                        justify-content-between
-                                                        align-items-center
-                                                        w-100
-                                                      ">
+                                                                        d-flex
+                                                                        justify-content-between
+                                                                        align-items-center
+                                                                        w-100
+                                                                      ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -457,7 +493,8 @@
       </div>
     </div>
 
-    <div id="filter" ref="sidebar" class="sidebar" :style="{ width: sidebar.width + 'px' }">
+    <!-- hack workaround to hide sidebar -->
+    <div id="filter" ref="sidebar" class="sidebar" :style="{ width: 0 + 'px' }">
       <div style="padding-top: 10px" />
       <h3>{{ dataset.name }}</h3>
       <p class="text-center" style="color: lightgray">
@@ -529,6 +566,27 @@
           <TagsInput v-model="selected.categories" element-id="selectedCategories"
             title="Only shows images annotated with the selected categories for 'Show Annotated' button. Leave empty to show all annotated images."
             :existing-tags="categoryTags" :typeahead="true" :typeahead-activation-threshold="0"></TagsInput>
+        </div>
+      </div>
+    </div>
+
+    <!-- zoom image modal here -->
+    <!-- <modal name="zoom-image-modal">
+      <img :src="this.$modal.params.image" alt="My Image">
+    </modal> -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="zoomImageOnRightClick">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Zoom image modal</h5>
+          </div>
+          <div class="modal-body">
+            <img :src="zoomImageURL"/>
+          </div>
+          <div class="modal-footer">
+            {{ zoomImageURL }}
+          </div>
         </div>
       </div>
     </div>
@@ -632,8 +690,10 @@
 </template>
 
 <script>
+import axios from "axios";
 import toastrs from "@/mixins/toastrs";
 import Dataset from "@/models/datasets";
+import Datasets from "@/models/datasets";
 import ImageAPI from "@/models/image";
 import Export from "@/models/exports";
 import ImageCard from "@/components/cards/ImageCard";
@@ -689,6 +749,11 @@ export default {
       dataset: {
         id: 0,
       },
+
+      //this is for the dropdown bar
+      allDatasets: {},
+      selectedDataset: {},
+
       allData: {},
       users: [],
       subdirectories: [],
@@ -744,6 +809,8 @@ export default {
 
       selectedCards: [],
       selectedImages: [],
+      selectedForZoomModal: [],
+      zoomImageURL: "",
 
       removeBatchCategory: false,
 
@@ -798,6 +865,26 @@ export default {
           this.axiosReqestError("Loading Dataset", error.response.data.message);
         })
         .finally(() => this.removeProcess(process));
+
+      // get all datasets for the dropdown menu
+      Datasets.allData({
+        limit: this.limit,
+        page: page
+      }).then(response => {
+        this.allDatasets = response.data.datasets;
+        console.log("hello allDatasets");
+        console.log(this.allDatasets);
+        // this.categories = response.data.categories;
+        // this.subdirectories = response.data.subdirectories;
+        // this.pages = response.data.pagination.pages;
+        // this.page = response.data.pagination.page;
+        // AdminPanel.getUsers(this.limit)
+        //   .then(response => {
+        //     this.users = response.data.users;
+        //   });
+      })
+        .finally(() => this.removeProcess(process));
+
     },
     getUsers() {
       Dataset.getUsers(this.dataset.id).then((response) => {
@@ -918,6 +1005,46 @@ export default {
       this.mouseDown = false;
       this.sidebar.canResize = false;
     },
+
+
+    // handling the redirection in dropdown menu
+    // TODO: make this work
+    redirectDataset(event) {
+      console.log("hello redirectDataset");
+      console.log(this.selectedDataset);
+
+      // go to the dataset page proper
+      let identifier = this.selectedDataset.id;
+
+      this.$router.push({ name: "dataset", params: { identifier } });
+      // .then(() => {
+      //   console.log('Updated route', this.$route)
+      //   // process the updated route params
+      // });
+    },
+
+    // handling showing a zoomed image on right click
+    showZoomModal(event) {
+      // workaround: make sure no active category is selected so it won't tag
+      this.activeBatchCategory = null
+
+      console.log("hello showZoomModal");
+      console.log(event);
+      this.selectedForZoomModal = event;
+      var imagesToShow = Array.from(this.images.filter(im => this.selectedForZoomModal.includes(String(im.id))));
+
+      // workaround: since there might be multiple images, just pick the first one
+      var imageToShow = imagesToShow[0];
+      console.log("imageToShow");
+      console.log(imageToShow);
+
+      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=250";
+      $('#zoomImageOnRightClick').modal('show');
+
+
+
+    },
+
 
     // handling selection of the images
     selectChange(event) {
@@ -1122,11 +1249,25 @@ export default {
       }
     },
   },
-  beforeRouteUpdate() {
+  beforeRouteUpdate(to, from) {
+    console.log("toParams");
+    console.log(to);
+    console.log("previousParams");
+    console.log(from);
     this.dataset.id = parseInt(this.identifier);
     this.updatePage();
   },
   created() {
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        console.log("toParams");
+        console.log(toParams);
+        console.log("previousParams");
+        console.log(previousParams);
+
+      }
+    )
     let tab = localStorage.getItem("dataset/tab");
     let order = localStorage.getItem("dataset/order");
     let sideWidth = localStorage.getItem("dataset/sideWidth");
@@ -1136,6 +1277,8 @@ export default {
     if (order !== null) this.order = order;
 
     this.dataset.id = parseInt(this.identifier);
+    console.log("hello from created");
+    console.log(this.identifier);
     this.updatePage();
   },
   mounted() {

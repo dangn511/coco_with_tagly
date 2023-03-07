@@ -76,9 +76,7 @@
             :key="index"
             class="badge badge-pill badge-primary category-badge"
             :style="{ 'background-color': category.color }"
-          >
-            {{ category.name }}
-          </span>
+          > &nbsp; </span>
         </div>
       </div>
     </div>
