@@ -52,7 +52,7 @@ Separate images by session (this one probably have to do backend side)
 
 - `dataset.permissions.download` seems to govern downloading behavior, look into this
 
-Test multi user functionality
+~~Test multi user functionality~~
 
 Try playing with Label Studio see if got something else to incorporate
 

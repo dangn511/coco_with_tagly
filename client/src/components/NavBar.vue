@@ -56,13 +56,13 @@
         <!-- <li class="nav-item d-none d-xl-block">
           <a class="nav-link" href="/api">API</a>
         </li> -->
-        <li class="nav-item d-none d-xl-block">
+        <!-- <li class="nav-item d-none d-xl-block">
           <a
             class="nav-link"
             href="https://github.com/jsbroks/coco-annotator/wiki"
             >Help</a
           >
-        </li>
+        </li> -->
       </ul>
       <Status class="nav-link left" />
       <User class="nav-link left" v-if="loginEnabled" />

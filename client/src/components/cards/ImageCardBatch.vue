@@ -13,7 +13,7 @@
           :src="imageUrl"
           :src-placeholder="loaderUrl"
           class="card-img-top"
-          style="width: 100%; display: block; pointer-events: none; min-width: 75px"
+          style="width: 100%; display: block; pointer-events: none; min-width: 50px"
         />
       </div>
 

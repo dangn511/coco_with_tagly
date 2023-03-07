@@ -8,9 +8,9 @@
     >
       <div class="container">
         <h2 class="text-center">
-          Datasets
+          Select a dataset
           <i
-            class="fa fa-question-circle help-icon"
+            class="fa fa-question-circle help-icon" 
             data-toggle="modal"
             data-target="#helpDataset"
             aria-hidden="true"
@@ -18,7 +18,9 @@
         </h2>
 
         <p class="text-center">
-          Loaded <strong>{{ datasets.length }}</strong> datasets.
+          Currently viewing all datasets available to user
+          <br>
+          <strong>{{ datasets.length }}</strong> datasets available
         </p>
 
         <div class="row justify-content-md-center">
@@ -35,7 +37,8 @@
             >
               Create
             </button>
-            <button type="button" class="btn btn-primary">Import</button>
+            <!-- this button doesn't do shit anyway, why is it even here -->
+            <!-- <button type="button" class="btn btn-primary">Import</button> -->
             <button
               type=" button"
               class="btn btn-secondary"

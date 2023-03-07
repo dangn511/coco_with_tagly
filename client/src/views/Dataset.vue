@@ -4,15 +4,23 @@
 
     <div class="bg-light" :style="{ 'margin-left': sidebar.width + 'px' }">
       <nav class="nav border-bottom shadow-sm" style="background-color: #4b5162">
-        <a class="btn tab" @click="tab = 'images'" :style="{ color: tab == 'images' ? 'white' : 'darkgray' }">
-          <i class="fa fa-picture-o" aria-hidden="true"></i> Images
-        </a>
+        
         <a class="btn tab" @click="tab = 'batchtag'" :style="{ color: tab == 'batchtag' ? 'white' : 'darkgray' }">
           <i class="fa fa-list" aria-hidden="true"></i> Batch tagging
+        </a>
+        <a class="btn tab" @click="tab = 'images'" :style="{ color: tab == 'images' ? 'white' : 'darkgray' }">
+          <i class="fa fa-picture-o" aria-hidden="true"></i> Object Annotation
         </a>
         <a class="btn tab" @click="tab = 'exports'" :style="{ color: tab == 'exports' ? 'white' : 'darkgray' }">
           <i class="fa fa-share" aria-hidden="true"></i> Exports
         </a>
+        <a class="btn tab" @click="tab = 'analytics'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+          <i class="fa fa-users" aria-hidden="true"></i> Analytics
+        </a>
+        <a class="btn tab" @click="tab = 'searchbar'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+          <i class="fa fa-users" aria-hidden="true"></i> Search
+        </a>
+<!-- 
         <a class="btn tab" @click="tab = 'members'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
           <i class="fa fa-users" aria-hidden="true"></i> Members
         </a>
@@ -25,7 +33,7 @@
         <a class="btn tab" @click="tab = 'testdragselect'"
           :style="{ color: tab == 'testdragselect' ? 'white' : 'darkgray' }">
           <i class="fa fa-list" aria-hidden="true"></i> Test dragsel
-        </a>
+        </a> -->
       </nav>
 
       <div class="bg-light text-left" style="overflow: auto; height: calc(100vh - 100px); margin: 10px">
@@ -716,7 +724,7 @@ export default {
         categories: [],
       },
       datasetExports: [],
-      tab: "images",
+      tab: "batchtag",
       order: "file_name",
       orderTypes: {
         file_name: "File Name",
@@ -1131,6 +1139,8 @@ export default {
     this.updatePage();
   },
   mounted() {
+    // TODO: need or no?
+    //this.tab = "batchtag";
     window.addEventListener("mouseup", this.stopDrag);
     window.addEventListener("mousedown", this.startDrag);
   },
