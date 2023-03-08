@@ -7,7 +7,7 @@ const state = {
   loginEnabled: true,
   version: "loading",
   totalUsers: 1,
-  name: "COCO Annotator",
+  name: "ScreenLife Analytics",
   socket: null
 };
 

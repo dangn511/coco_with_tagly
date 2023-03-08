@@ -41,7 +41,7 @@
 
       <div class="bg-light text-left" style="overflow: auto; height: calc(100vh - 100px); margin: 10px">
         <div class="container" v-show="tab == 'images'">
-          <ol class="breadcrumb">
+          <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item"></li>
             <li class="breadcrumb-item active">
               <button class="btn btn-sm btn-link" @click="folders = []">
@@ -54,7 +54,7 @@
                 {{ folder }}
               </button>
             </li>
-          </ol>
+          </ol> -->
 
           <p class="text-center" v-if="images.length < 1">
             No images found in directory.
@@ -128,7 +128,7 @@
         <!-- this one is for displaying tagly style -->
 
         <div class="container" v-show="tab == 'batchtag'">
-          <ol class="breadcrumb">
+          <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item"></li>
             <li class="breadcrumb-item active">
               <button class="btn btn-sm btn-link" @click="folders = []">
@@ -141,7 +141,7 @@
                 {{ folder }}
               </button>
             </li>
-          </ol>
+          </ol> -->
 
 
           <!-- <div
@@ -1046,7 +1046,7 @@ export default {
 
       this.zoomImage = imageToShow;
 
-      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=500";
+      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=300";
       this.zoomImageName = imageToShow.name;
       $('#zoomImageOnRightClick').modal('show');
 

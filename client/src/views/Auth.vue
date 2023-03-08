@@ -44,13 +44,13 @@
                 Login
               </a>
             </li>
-            <li class="nav-item" v-show="showRegistrationForm">
+            <!-- <li class="nav-item" v-show="showRegistrationForm">
               <a class="nav-link" :class="{ active: tab === 'register' }" id="contact-tab" data-toggle="tab"
                 href="#register" role="tab" aria-controls="contact" aria-selected="false" @click="tab = 'register'"
                 ref="registerTab">
                 Register
               </a>
-            </li>
+            </li> -->
             
           </ul>
           <div class="tab-content panel border-bottom border-right border-left text-left">
