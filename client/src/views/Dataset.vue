@@ -241,9 +241,9 @@
               ref="category"
             />
           </div> -->
-          <p class="text-center">
-            Displaying only categories for batch tagging
-          </p>
+          <div class="row justify-content-center">
+            <h5>Image level annotation</h5>
+          </div>
 
           <div class="row mx-2">
             <div class="col-3 border-left border-right">
@@ -253,7 +253,7 @@
 
               </select>
 
-              <button type="button" class="btn btn-success btn-xs" @click="redirectDataset">
+              <button type="button" class="btn btn-success btn-sm mx-3" @click="redirectDataset">
                 Go
               </button>
 
@@ -275,7 +275,7 @@
               </template>
             </div>
             <div class="col-3 border-left border-right">
-              <button type="button" class="btn btn-secondary" @click="createScanTask">
+              <button type="button" class="btn btn-secondary btn-sm" @click="createScanTask">
                 <div v-if="scan.id != null" class="progress">
                   <div class="progress-bar bg-secondary" :style="{ width: `${scan.progress}%` }">
                     Scanning
@@ -284,7 +284,7 @@
                 <div v-else>Scan</div>
               </button>
 
-              <button type="button" class="btn btn-info" @click="exportModal">
+              <button type="button" class="btn btn-info btn-sm" @click="exportModal">
                 <div v-if="exporting.id != null" class="progress">
                   <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
                     Exporting
@@ -578,14 +578,14 @@
     <div class="modal fade" tabindex="-1" role="dialog" id="zoomImageOnRightClick">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <!-- <div class="modal-header">
             <h5 class="modal-title">Zoom image modal</h5>
-          </div>
+          </div> -->
           <div class="modal-body">
             <img :src="zoomImageURL"/>
           </div>
           <div class="modal-footer">
-            {{ zoomImageURL }}
+            {{ zoomImageName}}
           </div>
         </div>
       </div>
@@ -810,7 +810,9 @@ export default {
       selectedCards: [],
       selectedImages: [],
       selectedForZoomModal: [],
+      zoomImage: null,
       zoomImageURL: "",
+      zoomImageName: "",
 
       removeBatchCategory: false,
 
@@ -831,6 +833,9 @@ export default {
       let process = "Loading images from dataset";
       this.addProcess(process);
 
+      console.log("the folder thing");
+      console.log(this.folders);
+
       Dataset.getData(this.dataset.id, {
         page: page,
         limit: this.limit,
@@ -842,7 +847,8 @@ export default {
       })
         .then((response) => {
           let data = response.data;
-          // console.log(data);
+          console.log("still figuring out the folder thing full data");
+          console.log(data);
 
           this.allData = data;
 
@@ -1038,7 +1044,10 @@ export default {
       console.log("imageToShow");
       console.log(imageToShow);
 
-      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=250";
+      this.zoomImage = imageToShow;
+
+      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=500";
+      this.zoomImageName = imageToShow.name;
       $('#zoomImageOnRightClick').modal('show');
 
 

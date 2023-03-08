@@ -1,78 +1,35 @@
 <template>
   <div style="display: block; height: inherit;">
-    
+
+
     <!-- <aside v-show="panels.show.left" class="left-panel shadow-lg"> -->
     <aside v-show="false" class="left-panel shadow-lg">
       <div v-show="mode == 'segment'">
         <hr />
 
-        <SelectTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="select"
-        />
+        <SelectTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="select" />
         <hr />
 
-        <BBoxTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="bbox"
-        />
+        <BBoxTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="bbox" />
 
-        <PolygonTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="polygon"
-        />
+        <PolygonTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="polygon" />
 
-        <MagicWandTool
-          v-model="activeTool"
-          :width="image.raster.width"
-          :height="image.raster.height"
-          :image-data="image.data"
-          @setcursor="setCursor"
-          ref="magicwand"
-        />
+        <MagicWandTool v-model="activeTool" :width="image.raster.width" :height="image.raster.height"
+          :image-data="image.data" @setcursor="setCursor" ref="magicwand" />
 
-        <BrushTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="brush"
-        />
-        <EraserTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="eraser"
-        />
+        <BrushTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="brush" />
+        <EraserTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="eraser" />
 
-        <KeypointTool
-          v-model="activeTool"
-          @setcursor="setCursor"
-          ref="keypoint"
-        />
-        <DEXTRTool
-          v-model="activeTool"
-          :scale="image.scale"
-          @setcursor="setCursor"
-          ref="dextr"
-        />
+        <KeypointTool v-model="activeTool" @setcursor="setCursor" ref="keypoint" />
+        <DEXTRTool v-model="activeTool" :scale="image.scale" @setcursor="setCursor" ref="dextr" />
       </div>
       <hr />
 
       <AnnotateButton :annotate-url="dataset.annotate_url" />
 
       <div v-show="mode == 'segment'">
-        <CopyAnnotationsButton
-          :categories="categories"
-          :image-id="image.id"
-          :next="image.next"
-          :previous="image.previous"
-        />
+        <CopyAnnotationsButton :categories="categories" :image-id="image.id" :next="image.next"
+          :previous="image.previous" />
         <ShowAllButton />
         <HideAllButton />
       </div>
@@ -85,11 +42,7 @@
       <!-- <DownloadButton :image="image" /> -->
       <SaveButton />
       <ModeButton v-model="mode" />
-      <SettingsButton
-        :metadata="image.metadata"
-        :commands="commands"
-        ref="settings"
-      />
+      <SettingsButton :metadata="image.metadata" :commands="commands" ref="settings" />
 
       <hr />
       <DeleteButton :image="image" />
@@ -97,71 +50,35 @@
 
     <aside v-show="panels.show.right" class="right-panel shadow-lg">
       <hr />
-      <FileTitle
-        :previousimage="image.previous"
-        :nextimage="image.next"
-        :filename="image.filename"
-        ref="filetitle"
-      />
+      <FileTitle :previousimage="image.previous" :nextimage="image.next" :filename="image.filename" ref="filetitle" />
 
       <div v-if="categories.length > 5">
         <div style="padding: 0px 5px">
-          <input
-            v-model="search"
-            class="search"
-            placeholder="Category Search"
-          />
+          <input v-model="search" class="search" placeholder="Category Search" />
         </div>
       </div>
 
-      <div
-        class="sidebar-section"
-        :style="{ 'max-height': mode == 'label' ? '100%' : '57%' }"
-      >
-        <p
-          v-if="categories.length == 0"
-          style="color: lightgray; font-size: 12px"
-        >
+      <div class="sidebar-section" :style="{ 'max-height': mode == 'label' ? '100%' : '57%' }">
+        <p v-if="categories.length == 0" style="color: lightgray; font-size: 12px">
           No categories have been enabled for this image.
         </p>
 
-        <div
-          v-show="mode == 'segment'"
-          style="overflow: auto; max-height: 100%"
-        >
+        <div v-show="mode == 'segment'" style="overflow: auto; max-height: 100%">
 
           <!-- <p class="text-center" style="color: lightgray">
             All the categories
             <strong style="color: black">{{ categories }}</strong>
           </p>   -->
-            
-          <Category
-            v-for="(category, index) in categories"
-            :key="category.id + '-category'"
-            :simplify="simplify"
-            :categorysearch="search"
-            :category="category"
-            :all-categories="categories"
-            :opacity="shapeOpacity"
-            :hover="hover"
-            :index="index"
-            @click="onCategoryClick"
-            @keypoints-complete="onKeypointsComplete"
-            :current="current"
-            :active-tool="activeTool"
-            :scale="image.scale"
-            ref="category"
-          />
+
+          <Category v-for="(category, index) in categories" :key="category.id + '-category'" :simplify="simplify"
+            :categorysearch="search" :category="category" :all-categories="categories" :opacity="shapeOpacity"
+            :hover="hover" :index="index" @click="onCategoryClick" @keypoints-complete="onKeypointsComplete"
+            :current="current" :active-tool="activeTool" :scale="image.scale" ref="category" />
         </div>
 
         <div v-show="mode == 'label'" style="overflow: auto; max-height: 100%">
-          <CLabel
-            v-for="category in categories"
-            v-model="image.categoryIds"
-            :key="category.id + '-label'"
-            :category="category"
-            :search="search"
-          />
+          <CLabel v-for="category in categories" v-model="image.categoryIds" :key="category.id + '-label'"
+            :category="category" :search="search" />
         </div>
       </div>
 
@@ -194,33 +111,81 @@
           </div>
 
           <div v-if="$refs.keypoint != null">
-            <KeypointPanel
-              :keypoint="$refs.keypoint"
-              :current-annotation="currentAnnotation"
-            />
+            <KeypointPanel :keypoint="$refs.keypoint" :current-annotation="currentAnnotation" />
           </div>
           <div v-if="$refs.dextr != null">
-            <DEXTRPanel
-              :dextr="$refs.dextr"
-            />
+            <DEXTRPanel :dextr="$refs.dextr" />
           </div>
         </div>
       </div>
     </aside>
 
     <div class="middle-panel" :style="{ cursor: cursor }">
-    <v-touch @pinch="onpinch" @pinchstart="onpinchstart">
-      <div id="frame" class="frame" @wheel="onwheel">
-        <canvas class="canvas" id="editor" ref="image" resize />
+      <div class="row bg-dark" style="padding-top: 56px; height: 30px">
+        <div class="col-3 text-light">
+          Dataset&nbsp;&nbsp;
+
+          <select v-model="selectedDataset">
+            <option v-for="mDataset in allDatasets" :value="mDataset" :key="mDataset.id">{{ mDataset.name }}</option>
+
+          </select>
+
+        </div>
+        <div class="col-6 border-right text-light">
+          Image&nbsp;&nbsp;
+          <select v-model="selectedDataset">
+            <option v-for="mImage in allImages" :value="mImage" :key="mImage.id">{{ mImage.file_name }}</option>
+
+          </select>
+          <!-- <template v-for="(category, index) in categories">
+          <span v-if="category.category_type == 'batch'" :key="index"
+            class="badge badge-pill badge-primary category-badge"
+            :class="{ 'border border-dark border-4': activeBatchCategory == category }"
+            :style="{ 'background-color': category.color }" @click="activeBatchCategory = category">
+            {{ category.name }}
+          </span>
+        </template>
+
+        <template>
+          <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
+          <label for="removeCategoryCheckbox"> Remove Category </label>
+        </template> -->
+        </div>
+        <div class="col-1 border-left">
+          <button type="button" class="btn btn-success btn-sm mx-3">
+            Go
+          </button>
+          <!-- <button type="button" class="btn btn-secondary" @click="createScanTask">
+          <div v-if="scan.id != null" class="progress">
+            <div class="progress-bar bg-secondary" :style="{ width: `${scan.progress}%` }">
+              Scanning
+            </div>
+          </div>
+          <div v-else>Scan</div>
+        </button>
+
+        <button type="button" class="btn btn-info" @click="exportModal">
+          <div v-if="exporting.id != null" class="progress">
+            <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
+              Exporting
+            </div>
+          </div>
+          <div v-else>Export COCO</div>
+        </button> -->
+        </div>
       </div>
-    </v-touch>   
+      <v-touch @pinch="onpinch" @pinchstart="onpinchstart">
+        <div id="frame" class="frame" @wheel="onwheel">
+          <canvas class="canvas" id="editor" ref="image" resize />
+        </div>
+      </v-touch>
     </div>
 
     <div v-show="annotating.length > 0" class="fixed-bottom alert alert-warning alert-dismissible fade show">
       <span>
-      This image is being annotated by <b>{{ annotating.join(', ') }}</b>.
+        This image is being annotated by <b>{{ annotating.join(', ') }}</b>.
       </span>
-      
+
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -239,6 +204,9 @@ import FileTitle from "@/components/annotator/FileTitle";
 import Category from "@/components/annotator/Category";
 import Label from "@/components/annotator/Label";
 import Annotations from "@/models/annotations";
+
+import Dataset from "@/models/datasets";
+import Datasets from "@/models/datasets";
 
 import PolygonTool from "@/components/annotator/tools/PolygonTool";
 import BBoxTool from "@/components/annotator/tools/BBoxTool";
@@ -370,7 +338,13 @@ export default {
       annotating: [],
       pinching: {
         old_zoom: 1
-      }
+      },
+
+      //this is for the dropdown bars
+      allDatasets: {},
+      selectedDataset: {},
+      allImages: {},
+      selectedImages: {},
     };
   },
   methods: {
@@ -450,8 +424,8 @@ export default {
       let curr_zoom = e.scale * this.pinching.old_zoom;
       let beta = this.paper.view.zoom / curr_zoom;
       let pc = viewPosition.subtract(this.paper.view.center);
-      let a = viewPosition.subtract(pc.multiply(beta)).subtract(this.paper.view.center);  
-      let transform = {zoom: curr_zoom, offset: a}
+      let a = viewPosition.subtract(pc.multiply(beta)).subtract(this.paper.view.center);
+      let transform = { zoom: curr_zoom, offset: a }
       if (transform.zoom < 10 && transform.zoom > 0.01) {
         this.image.scale = 1 / transform.zoom;
         this.paper.view.zoom = transform.zoom;
@@ -628,6 +602,8 @@ export default {
           this.$router.go(-1);
         })
         .finally(() => this.removeProcess(process));
+
+
     },
     onCategoryClick(indices) {
       this.current.annotation = indices.annotation;
@@ -856,6 +832,38 @@ export default {
       this.$refs.category.forEach(category => {
         category.isVisible = category.category.annotations.length > 0;
       });
+
+      //workaround: retrieve dataset info from here cause it's called after getdata is done
+      console.log("this dataset");
+      console.log(this.dataset);
+
+      Dataset.getData(this.dataset.id, {
+        order: "file_name",
+      })
+        .then((response) => {
+          let data = response.data;
+          // console.log(data);
+
+
+          this.allImages = data.images;
+          console.log("images list");
+          console.log(this.allImages);
+          // this.dataset = data.dataset;
+          // this.categories = data.categories;
+
+          // this.imageCount = data.total;
+          // this.pages = data.pages;
+
+          // this.subdirectories = data.subdirectories;
+          // this.scan.id = data.scanId;
+          // this.generate.id = data.generateId;
+          // this.importing.id = data.importId;
+          // this.exporting.id = data.exportId;
+        })
+        .catch((error) => {
+          this.axiosReqestError("Loading Dataset", error.response.data.message);
+        })
+        .finally();
     },
     hideAll() {
       if (this.$refs.category == null) return;
@@ -873,7 +881,7 @@ export default {
       if (!categoryComponent) return null;
       return categoryComponent.category;
     },
-    addAnnotation(categoryName, segments, keypoints, isbbox=false) {
+    addAnnotation(categoryName, segments, keypoints, isbbox = false) {
       segments = segments || [];
       keypoints = keypoints || [];
 
@@ -927,11 +935,11 @@ export default {
       }
     },
     nextImage() {
-      if(this.image.next != null)
+      if (this.image.next != null)
         this.$refs.filetitle.route(this.image.next);
     },
     previousImage() {
-      if(this.image.previous != null)
+      if (this.image.previous != null)
         this.$refs.filetitle.route(this.image.previous);
     }
   },
@@ -1019,10 +1027,9 @@ export default {
       if (this.currentCategory == null) {
         return null;
       }
-      if (this.currentAnnotation == null 
-      || this.currentAnnotation.keypointLabels.length === 0 
-      || !this.currentAnnotation.showKeypoints)
-      {
+      if (this.currentAnnotation == null
+        || this.currentAnnotation.keypointLabels.length === 0
+        || !this.currentAnnotation.showKeypoints) {
         return null;
       }
       if (this.current.keypoint == -1) {
@@ -1077,12 +1084,34 @@ export default {
     this.getData();
 
     this.$socket.emit("annotating", { image_id: this.image.id, active: true });
+
+
   },
   created() {
     this.paper = new paper.PaperScope();
 
     this.image.id = parseInt(this.identifier);
     this.image.url = "/api/image/" + this.image.id;
+
+    Datasets.allData({
+    }).then(response => {
+      this.allDatasets = response.data.datasets;
+      console.log("hello allDatasets");
+      console.log(this.allDatasets);
+      // this.categories = response.data.categories;
+      // this.subdirectories = response.data.subdirectories;
+      // this.pages = response.data.pagination.pages;
+      // this.page = response.data.pagination.page;
+      // AdminPanel.getUsers(this.limit)
+      //   .then(response => {
+      //     this.users = response.data.users;
+      //   });
+    })
+      .finally();
+
+
+
+
   }
 };
 </script>

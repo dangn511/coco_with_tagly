@@ -3,7 +3,7 @@
     <div style="padding-top: 55px" />
     <div class="album py-5 container" style="overflow: auto; height: calc(100vh - 55px)">
       <div class="row">
-        <h1>COCO Annotator</h1>
+        <h1>ScreenLife Analytics</h1>
         <!-- <div class="col-sm text-left">
 
           <h1>COCO Annotator</h1>
@@ -51,6 +51,7 @@
                 Register
               </a>
             </li>
+            
           </ul>
           <div class="tab-content panel border-bottom border-right border-left text-left">
             <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
@@ -112,6 +113,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <p>Please contact xxx@sutd.edu.sg for access or more information</p>
       </div>
     </div>
   </div>

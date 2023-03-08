@@ -35,16 +35,18 @@
           <div v-if="dataset.numberImages > 0">
             {{ dataset.numberAnnotated }} of {{ dataset.numberImages }} images
             annotated.
-            <div class="progress">
+            <!-- <div class="progress">
               <div
                 class="progress-bar"
                 role="progressbar"
                 :style="{ width: percent + '%' }"
               ></div>
-            </div>
+            </div> -->
           </div>
 
           <p v-else>No images in dataset.</p>
+          <hr />
+          <p>Placeholder metadata</p>
           <span
             v-for="(category, index) in listCategories"
             :key="index"
