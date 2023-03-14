@@ -1,20 +1,21 @@
 {
     "tags": [
         {
-            "name": "cat21",
+            "name": "cate1",
             "color": "#AAAAAA"
         },
         {
-            "name": "cat22",
+            "name": "cate2",
             "color": "#5a3776"
         },
         {
-            "name": "cat23",
-            "color": "#ec0909"
+            "name": "cate3",
+            "color": "#5d9ab1"
         },
         {
-            "name": "cat24",
-            "color": "#335fe6"
+            "name": "cate4",
+            "color": "#1a8b99"
         }
+        
     ]
 }

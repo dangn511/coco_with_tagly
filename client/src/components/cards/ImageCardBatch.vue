@@ -195,6 +195,7 @@ p {
 }
 .category-badge {
   float: left;
-  margin: 0 2px 5px 0;
+  margin: 0 1px 1px 0;
+  font-size: 0.35rem;
 }
 </style>

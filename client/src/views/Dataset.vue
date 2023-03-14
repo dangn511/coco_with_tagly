@@ -391,19 +391,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                                                                  media-body
-                                                                                  pb-3
-                                                                                  mb-0
-                                                                                  small
-                                                                                  lh-125
-                                                                                  border-bottom border-gray
-                                                                                ">
+                                                                                                  media-body
+                                                                                                  pb-3
+                                                                                                  mb-0
+                                                                                                  small
+                                                                                                  lh-125
+                                                                                                  border-bottom border-gray
+                                                                                                ">
                 <div class="
-                                                                                    d-flex
-                                                                                    justify-content-between
-                                                                                    align-items-center
-                                                                                    w-100
-                                                                                  ">
+                                                                                                    d-flex
+                                                                                                    justify-content-between
+                                                                                                    align-items-center
+                                                                                                    w-100
+                                                                                                  ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -832,6 +832,7 @@ export default {
       tagsetImporting: {
         jsonData: {},
         categories: [],
+        allCategories: [],
         progress: 0,
         with_empty_images: false,
         id: null,
@@ -942,6 +943,17 @@ export default {
       })
         .finally(() => this.removeProcess(process));
 
+      // get every categories for checking purposes
+      CategoryAPI.allData({
+        page: 1,
+        limit: 9999
+      })
+        .then(response => {
+          this.tagsetImporting.allCategories = response.data.categories;
+
+        })
+
+
     },
     getUsers() {
       Dataset.getUsers(this.dataset.id).then((response) => {
@@ -1031,10 +1043,10 @@ export default {
     tagsetModal() {
       // console.log("importModal importing.id ");
       // console.log(this.importing.id);
-      if (this.tagsetImporting.id != null) {
-        this.$router.push({ path: "/tasks", query: { id: this.tagsetImporting.id } });
-        return;
-      }
+      // if (this.tagsetImporting.id != null) {
+      //   this.$router.push({ path: "/tasks", query: { id: this.tagsetImporting.id } });
+      //   return;
+      // }
 
       $("#tagsetUpload").modal("show");
     },
@@ -1071,7 +1083,7 @@ export default {
         this.tagsetImporting.categories = this.tagsetImporting.jsonData.tags;
         // console.log(this.tagsetImporting.categories);
 
-        
+
         // update the dataset's categories list
         // check out DatasetCard, steps in there
 
@@ -1081,47 +1093,123 @@ export default {
         console.log("existingAnnoCategories");
         console.log(existingAnnoCategories);
 
-        // TODO: check if this category already exist in all categories
+        let categoriesToPush = [];
+
+        let promises = [];
 
         for (let tag of this.tagsetImporting.categories) {
-          CategoryAPI.create({
-            name: tag.name,
-            category_type: "batch",
-            supercategory: "",
-            color: tag.color,
-            keypoint_labels: [],
-            keypoint_edges: [],
-            keypoint_colors: [],
-          }).then((response) => {
-            let data = response.data;
-            console.log("data coming back from CategoryAPI");
-            console.log(data);
+          // check if tagsetImporting.allCategories contains it
+          // if (!im.batch_annotations.some(cat => cat.id == this.activeBatchCategory.id))
+          if (!this.tagsetImporting.allCategories.some(cat => cat.name == tag.name)) {
+            // if category name not registered yet, create it (promises)
+            promises.push(
+              CategoryAPI.create({
+                name: tag.name,
+                category_type: "batch",
+                supercategory: "",
+                color: tag.color,
+                keypoint_labels: [],
+                keypoint_edges: [],
+                keypoint_colors: [],
+              })
+            );
+          } else {
+            existingAnnoCategories.push(tag);
+          }
 
-            // now add the newly created categories to this dataset
-            existingAnnoCategories.push(data);
 
+        };
 
-            //
-            // this.newBatchCategoryName = "";
-            // this.newBatchCategorySupercategory = "";
-            // this.newBatchCategoryColor = null;
-            // this.newBatchCategoryKeypoint = {};
-            // this.updatePage();
+        Promise.all(promises).then((response) => {
+
+          console.log("data coming back from CategoryAPI promises");
+          console.log(response);
+
+          for (let i of response) {
+            existingAnnoCategories.push(i.data)
+          }
+
+          existingAnnoCategories.forEach(ele => categoriesToPush.push(ele.name));
+
+        })
+          .catch(error => {
+            console.error(error)
+          }).finally(() => {
+            axios
+              .post("/api/dataset/" + this.dataset.id, {
+                categories: categoriesToPush,
+                default_annotation_metadata: this.dataset.default_annotation_metadata
+              })
+              .then(() => {
+                this.updatePage();
+              });
+
           })
-            .catch(error => {
-              this.axiosReqestError(
-                "Creating Category",
-                error.response.data.message
-              );
-            });
-        }
 
-        console.log("after updated new batch cats");
-        console.log(existingAnnoCategories);
+        // console.log("after updated new batch cats");
+        // console.log(existingAnnoCategories);
+
+        // axios
+        //   .post("/api/dataset/" + this.dataset.id, {
+        //     categories: existingAnnoCategories,
+        //     default_annotation_metadata: this.dataset.default_annotation_metadata
+        //   })
+        //   .then(() => {
+        //     this.updatePage();
+        //   });
 
 
-        
 
+
+
+
+        // TODO: check if this category already exist in all categories
+
+        // for (let tag of this.tagsetImporting.categories) {
+        //   CategoryAPI.create({
+        //     name: tag.name,
+        //     category_type: "batch",
+        //     supercategory: "",
+        //     color: tag.color,
+        //     keypoint_labels: [],
+        //     keypoint_edges: [],
+        //     keypoint_colors: [],
+        //   }).then((response) => {
+        //     let data = response.data;
+        //     console.log("data coming back from CategoryAPI");
+        //     console.log(data);
+
+        //     // now add the newly created categories to this dataset
+        //     existingAnnoCategories.push(data);
+
+
+        //     //
+        //     // this.newBatchCategoryName = "";
+        //     // this.newBatchCategorySupercategory = "";
+        //     // this.newBatchCategoryColor = null;
+        //     // this.newBatchCategoryKeypoint = {};
+        //     // this.updatePage();
+        //   })
+        //     .catch(error => {
+        //       this.axiosReqestError(
+        //         "Creating Category",
+        //         error.response.data.message
+        //       );
+        //     });
+        // }
+
+
+        // console.log("after updated new batch cats");
+        // console.log(existingAnnoCategories);
+
+        // axios
+        //   .post("/api/dataset/" + this.dataset.id, {
+        //     categories: existingAnnoCategories,
+        //     default_annotation_metadata: this.dataset.default_annotation_metadata
+        //   })
+        //   .then(() => {
+        //     this.updatePage();
+        //   });
 
 
 
