@@ -44,6 +44,9 @@ delete_data.add_argument('fully', default=False, type=bool,
 coco_upload = reqparse.RequestParser()
 coco_upload.add_argument('coco', location='files', type=FileStorage, required=True, help='Json coco')
 
+tagset_upload = reqparse.RequestParser()
+tagset_upload.add_argument('tagset', location='files', type=FileStorage, required=True, help='Json tagset')
+
 export = reqparse.RequestParser()
 export.add_argument('categories', type=str, default=None, required=False, help='Ids of categories to export')
 export.add_argument('with_empty_images', type=inputs.boolean, default=False, required=False, help='Export with un-annotated images')
@@ -578,6 +581,36 @@ class DatasetCoco(Resource):
             return {'message': 'Invalid dataset ID'}, 400
 
         return dataset.import_coco(json.load(coco))
+    
+# to upload tagset and shit    
+@api.route('/<int:dataset_id>/tagset')
+class DatasetTagset(Resource):
+
+    # @login_required
+    # def get(self, dataset_id):
+    #     """ Returns coco of images and annotations in the dataset (only owners) """
+    #     dataset = current_user.datasets.filter(id=dataset_id).first()
+
+    #     if dataset is None:
+    #         return {"message": "Invalid dataset ID"}, 400
+        
+    #     if not current_user.can_download(dataset):
+    #         return {"message": "You do not have permission to download the dataset's annotations"}, 403
+
+    #     return coco_util.get_dataset_coco(dataset)
+
+    @api.expect(tagset_upload)
+    @login_required
+    def post(self, dataset_id):
+        """ Adds coco formatted annotations to the dataset """
+        args = tagset_upload.parse_args()
+        tagset = args['tagset']
+
+        dataset = current_user.datasets.filter(id=dataset_id).first()
+        if dataset is None:
+            return {'message': 'Invalid dataset ID'}, 400
+
+        return dataset.import_tagset(json.load(tagset))
 
 
 @api.route('/coco/<int:import_id>')

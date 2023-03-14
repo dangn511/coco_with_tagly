@@ -46,6 +46,16 @@ export default {
       }
     });
   },
+  uploadTagset(id, file) {
+    let form = new FormData();
+    form.append("tagset", file);
+
+    return axios.post(`${baseURL}/${id}/tagset`, form, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
   export(id, format) {
     return axios.get(`${baseURL}/${id}/${format}`);
   },

@@ -273,6 +273,15 @@
                 <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
                 <label for="removeCategoryCheckbox"> Remove Category </label>
               </template>
+
+              <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
+                <div v-if="importing.id != null" class="progress">
+                  <div class="progress-bar bg-primary" :style="{ width: `${importing.progress}%` }">
+                    Importing
+                  </div>
+                </div>
+                <div v-else>Import tagset</div>
+              </button>
             </div>
             <div class="col-3 border-left border-right">
               <button type="button" class="btn btn-secondary btn-sm" @click="createScanTask">
@@ -321,8 +330,8 @@
 
             <!-- <div class="row"> -->
             <div>
-              <MyDragSel attribute="attr" @change="selectChange($event)" @rightclicked="showZoomModal($event)" @contextmenu.native.prevent
-                class="d-flex flex-wrap">
+              <MyDragSel attribute="attr" @change="selectChange($event)" @rightclicked="showZoomModal($event)"
+                @contextmenu.native.prevent class="d-flex flex-wrap">
                 <ImageCardBatch v-for="image in images" :key="image.id" :attr="image.id" :image="image"
                   :class="{ 'border border-primary': selectedImages.includes(String(image.id)) }" />
               </MyDragSel>
@@ -382,19 +391,19 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                                                      media-body
-                                                                      pb-3
-                                                                      mb-0
-                                                                      small
-                                                                      lh-125
-                                                                      border-bottom border-gray
-                                                                    ">
+                                                                                  media-body
+                                                                                  pb-3
+                                                                                  mb-0
+                                                                                  small
+                                                                                  lh-125
+                                                                                  border-bottom border-gray
+                                                                                ">
                 <div class="
-                                                                        d-flex
-                                                                        justify-content-between
-                                                                        align-items-center
-                                                                        w-100
-                                                                      ">
+                                                                                    d-flex
+                                                                                    justify-content-between
+                                                                                    align-items-center
+                                                                                    w-100
+                                                                                  ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -531,7 +540,7 @@
 
         <button type="button" class="btn btn-dark btn-block" @click="exportModal">
           <div v-if="exporting.id != null" class="progress">
-            <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
+            <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }" updatePage>
               Exporting
             </div>
           </div>
@@ -582,10 +591,10 @@
             <h5 class="modal-title">Zoom image modal</h5>
           </div> -->
           <div class="modal-body">
-            <img :src="zoomImageURL"/>
+            <img :src="zoomImageURL" />
           </div>
           <div class="modal-footer">
-            {{ zoomImageName}}
+            {{ zoomImageName }}
           </div>
         </div>
       </div>
@@ -653,6 +662,38 @@
       </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="tagsetUpload">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Upload tagset</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Uploading a tagset will replace existing available labels for this dataset
+            </p>
+            <form>
+              <div class="form-group">
+                <label for="tagsetJSON">Select tagset</label>
+                <input type="file" class="form-control-file" id="tagsetJSON" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="importTagset" data-dismiss="modal">
+              Upload
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" tabindex="-1" role="dialog" id="exportDataset">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -710,6 +751,8 @@ import Category from "@/components/annotator/Category";
 import Label from "@/components/annotator/Label";
 import Annotations from "@/models/annotations";
 
+import CategoryAPI from "@/models/categories";
+
 import { mapMutations } from "vuex";
 import MyDragSel from "../components/DragSelect.vue";
 
@@ -720,6 +763,7 @@ export default {
   components: {
     FileTitle,
     Category,
+    CategoryAPI,
     CLabel: Label,
     ImageCard,
     ImageCardBatch,
@@ -780,6 +824,13 @@ export default {
         id: null,
       },
       exporting: {
+        categories: [],
+        progress: 0,
+        with_empty_images: false,
+        id: null,
+      },
+      tagsetImporting: {
+        jsonData: {},
         categories: [],
         progress: 0,
         with_empty_images: false,
@@ -968,6 +1019,8 @@ export default {
       this.folders.splice(index + 1, this.folders.length);
     },
     importModal() {
+      // console.log("importModal importing.id ");
+      // console.log(this.importing.id);
       if (this.importing.id != null) {
         this.$router.push({ path: "/tasks", query: { id: this.importing.id } });
         return;
@@ -975,8 +1028,20 @@ export default {
 
       $("#cocoUpload").modal("show");
     },
+    tagsetModal() {
+      // console.log("importModal importing.id ");
+      // console.log(this.importing.id);
+      if (this.tagsetImporting.id != null) {
+        this.$router.push({ path: "/tasks", query: { id: this.tagsetImporting.id } });
+        return;
+      }
+
+      $("#tagsetUpload").modal("show");
+    },
     importCOCO() {
       let uploaded = document.getElementById("coco");
+      console.log("coco to be updated");
+      console.log(uploaded.files);
       Dataset.uploadCoco(this.dataset.id, uploaded.files[0])
         .then((response) => {
           let id = response.data.id;
@@ -987,6 +1052,100 @@ export default {
         })
         .finally(() => this.removeProcess(process));
     },
+
+    // to handle importing tagset
+    importTagset() {
+      let uploaded = document.getElementById("tagsetJSON");
+      console.log("tagset to be updated");
+      // console.log(uploaded.files[0]);
+
+      let jsonFileRaw = uploaded.files[0];
+
+      const reader = new FileReader();
+
+
+      reader.onload = () => {
+        const json = JSON.parse(reader.result);
+        this.tagsetImporting.jsonData = json;
+        // console.log(this.tagsetImporting.jsonData);
+        this.tagsetImporting.categories = this.tagsetImporting.jsonData.tags;
+        // console.log(this.tagsetImporting.categories);
+
+        
+        // update the dataset's categories list
+        // check out DatasetCard, steps in there
+
+        let existingCategories = this.categories;
+        let existingAnnoCategories = Array.from(existingCategories.filter(cat => cat.category_type == "annotation"));
+        // var imagesToShow = Array.from(this.images.filter(im => this.selectedForZoomModal.includes(String(im.id))));
+        console.log("existingAnnoCategories");
+        console.log(existingAnnoCategories);
+
+        // TODO: check if this category already exist in all categories
+
+        for (let tag of this.tagsetImporting.categories) {
+          CategoryAPI.create({
+            name: tag.name,
+            category_type: "batch",
+            supercategory: "",
+            color: tag.color,
+            keypoint_labels: [],
+            keypoint_edges: [],
+            keypoint_colors: [],
+          }).then((response) => {
+            let data = response.data;
+            console.log("data coming back from CategoryAPI");
+            console.log(data);
+
+            // now add the newly created categories to this dataset
+            existingAnnoCategories.push(data);
+
+
+            //
+            // this.newBatchCategoryName = "";
+            // this.newBatchCategorySupercategory = "";
+            // this.newBatchCategoryColor = null;
+            // this.newBatchCategoryKeypoint = {};
+            // this.updatePage();
+          })
+            .catch(error => {
+              this.axiosReqestError(
+                "Creating Category",
+                error.response.data.message
+              );
+            });
+        }
+
+        console.log("after updated new batch cats");
+        console.log(existingAnnoCategories);
+
+
+        
+
+
+
+
+      };
+
+      reader.readAsText(jsonFileRaw);
+
+
+      // let jsonFileRaw = uploaded.files[0];
+
+      // var newTags = JSON.parse(jsonFileRaw).text;
+      // console.log(newTags);
+
+      // Dataset.uploadTagset(this.dataset.id, uploaded.files[0])
+      //   .then((response) => {
+      //     let id = response.data.id;
+      //     this.tagsetImporting.id = id;
+      //   })
+      //   .catch((error) => {
+      //     this.axiosReqestError("Importing tagset", error.response.data.message);
+      //   })
+      //   .finally(() => this.removeProcess(process));
+    },
+
     mouseMove(event) {
       let element = this.$refs.sidebar;
 
@@ -1078,7 +1237,7 @@ export default {
           if (!this.removeBatchCategory) {
             if (!im.batch_annotations.some(cat => cat.id == this.activeBatchCategory.id)) {
 
-              im.batch_annotations.push(this.activeBatchCategory)
+              im.batch_annotations.push(this.activeBatchCategory);
 
 
 

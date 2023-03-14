@@ -63,6 +63,26 @@ class DatasetModel(DynamicDocument):
             "id": task.id,
             "name": task.name
         }
+    
+    # TODO look more at workers.tasks
+    def import_tagset(self, tagset_json):
+
+        from workers.tasks import import_annotations
+
+        task = TaskModel(
+            name="Import batch tagset into {}".format(self.name),
+            dataset_id=self.id,
+            group="Tagset Import"
+        )
+        task.save()
+
+        cel_task = import_annotations.delay(task.id, self.id, tagset_json)
+
+        return {
+            "celery_id": cel_task.id,
+            "id": task.id,
+            "name": task.name
+        }
 
     def export_coco(self, categories=None, style="COCO", with_empty_images=False):
 
