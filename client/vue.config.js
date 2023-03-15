@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: '/screenlife-analytics/',
   devServer: {
     disableHostCheck: true,
     proxy: {

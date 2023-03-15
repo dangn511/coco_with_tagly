@@ -134,7 +134,8 @@
         <div class="col-6 border-right text-light">
           Image&nbsp;&nbsp;
           <select v-model="selectedDataset">
-            <option v-for="mImage in allImages" :value="mImage" :key="mImage.id">{{ mImage.file_name }}</option>
+            <option v-for="mImage in allImages" :value="mImage" :key="mImage.id"
+            :style="{ 'background-color': mImage.annotated ? 'greenyellow' : 'lightcoral' }">{{ mImage.file_name }}</option>
 
           </select>
           <!-- <template v-for="(category, index) in categories">
@@ -998,7 +999,7 @@ export default {
     annotating() {
       this.removeFromAnnotatingList();
     },
-    user() {
+    user() {doneLoading
       this.removeFromAnnotatingList();
     }
   },

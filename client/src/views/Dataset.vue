@@ -1269,11 +1269,11 @@ export default {
       // go to the dataset page proper
       let identifier = this.selectedDataset.id;
 
-      this.$router.push({ name: "dataset", params: { identifier } });
-      // .then(() => {
-      //   console.log('Updated route', this.$route)
-      //   // process the updated route params
-      // });
+      this.$router.push({ name: "dataset", params: { identifier } })
+      .then(() => {
+        console.log('Updated route ', this.$route)
+        // process the updated route params
+      });
     },
 
     // handling showing a zoomed image on right click
@@ -1511,7 +1511,7 @@ export default {
     console.log("previousParams");
     console.log(from);
     this.dataset.id = parseInt(this.identifier);
-    this.updatePage();
+    // this.updatePage();
   },
   created() {
     this.$watch(
