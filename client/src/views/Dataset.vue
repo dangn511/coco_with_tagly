@@ -16,10 +16,10 @@
           <a class="btn tab" @click="tab = 'exports'" :style="{ color: tab == 'exports' ? 'white' : 'darkgray' }">
             <i class="fa fa-share" aria-hidden="true"></i> Exports
           </a>
-          <a class="btn tab" @click="tab = 'analytics'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+          <a class="btn tab" @click="tab = 'analytics'" :style="{ color: tab == 'analytics' ? 'white' : 'darkgray' }">
             <i class="fa fa-users" aria-hidden="true"></i> Analytics
           </a>
-          <a class="btn tab" @click="tab = 'searchbar'" :style="{ color: tab == 'members' ? 'white' : 'darkgray' }">
+          <a class="btn tab" @click="tab = 'searchbar'" :style="{ color: tab == 'searchbar' ? 'white' : 'darkgray' }">
             <i class="fa fa-users" aria-hidden="true"></i> Search
           </a>
 
@@ -301,6 +301,11 @@
                 </div>
                 <div v-else>Export COCO</div>
               </button>
+
+              <button type="button" class="btn btn-info btn-sm" @click="exportModal">
+                
+                <div >Export CSV</div>
+              </button>
             </div>
           </div>
 
@@ -375,6 +380,98 @@
           </div>
         </div>
 
+        <div class="container" v-show="tab == 'analytics'">
+          <div class="row border-bottom">
+            <h6>This is a rough mockup only. It doesn't do anything yet</h6>
+          </div>
+
+          <div class="row border-bottom">
+            <div class="col-sm-2">
+              <div class="row">
+                Dataset
+              </div>
+              <div class="row">
+                <select v-model="selectedDataset">
+                  <option v-for="mDataset in allDatasets" :value="mDataset" :key="mDataset.id">{{ mDataset.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-1">
+              <div class="row">
+                Image
+              </div>
+              <div class="row">
+                <input type="text" readonly id="analyticsImageNum" value="Placeholder"
+                  :style="{ height: '20px', width: '50px' }">
+              </div>
+            </div>
+
+            <div class="col-sm-9">
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Combine
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Delete
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Split
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Comment
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                External Link
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Resume
+              </button>
+              <button type="button" class="btn btn-dark btn-sm mx-2">
+                Output File
+              </button>
+            </div>
+
+          </div>
+
+          <div class="row border-bottom my-2">
+            <div class="col">
+              <form class="w-100">
+                <div class="form-group">
+
+                  <input type="text" readonly id="scrollJourney" class="form-control form-control-lg"
+                    value="Scrolling journey thing goes here " :style="{ height: '150px' }">
+
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="row justify-content-center">
+            <div class="col-sm-3 border-right">
+              <form>
+                <div class="form-group">
+                  <label for="OCRText">OCR Text</label>
+                  <div class="row">
+                    <input type="text" readonly id="OCRText" class="text-wrap"
+                      value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                      :style="{ height: '300px' }">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-sm-9">
+              <template>
+                <div class="form-group">
+                  <label for="my-input">Screenshots</label>
+                  <input id="my-input" class="form-control form-control-lg" type="text" value="Images go here" readonly
+                    :style="{ height: '300px' }" />
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
         <div class="container" v-show="tab == 'members'">
           <div class="card my-3 p-3 shadow-sm mr-2">
             <h6 class="border-bottom border-gray pb-2">
@@ -391,19 +488,20 @@
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div class="
-                                                                                                  media-body
-                                                                                                  pb-3
-                                                                                                  mb-0
-                                                                                                  small
-                                                                                                  lh-125
-                                                                                                  border-bottom border-gray
-                                                                                                ">
-                <div class="
-                                                                                                    d-flex
-                                                                                                    justify-content-between
-                                                                                                    align-items-center
-                                                                                                    w-100
-                                                                                                  ">
+                                                                                                                        media-body
+                                                                                                                        pb-3
+                                                                                                                        mb-0
+                                                                                                                        small
+                                                                                                                        lh-125
+                                                                                                                        border-bottom border-gray
+                                                                                                                      ">
+                <div
+                  class="
+                                                                                                                          d-flex
+                                                                                                                          justify-content-between
+                                                                                                                          align-items-center
+                                                                                                                          w-100
+                                                                                                                        ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -546,6 +644,8 @@
           </div>
           <div v-else>Export COCO</div>
         </button>
+
+        
       </div>
       <hr />
       <h6 class="sidebar-title text-center">Subdirectories</h6>
@@ -1270,10 +1370,10 @@ export default {
       let identifier = this.selectedDataset.id;
 
       this.$router.push({ name: "dataset", params: { identifier } })
-      .then(() => {
-        console.log('Updated route ', this.$route)
-        // process the updated route params
-      });
+        .then(() => {
+          console.log('Updated route ', this.$route)
+          // process the updated route params
+        });
     },
 
     // handling showing a zoomed image on right click

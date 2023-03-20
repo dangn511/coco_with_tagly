@@ -1,19 +1,19 @@
 {
     "tags": [
         {
-            "name": "cate1",
+            "name": "testtagA",
             "color": "#AAAAAA"
         },
         {
-            "name": "cate2",
+            "name": "testtagB",
             "color": "#5a3776"
         },
         {
-            "name": "cate3",
+            "name": "testtagC",
             "color": "#5d9ab1"
         },
         {
-            "name": "cate4",
+            "name": "testtagD",
             "color": "#1a8b99"
         }
         
