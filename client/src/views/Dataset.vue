@@ -501,20 +501,20 @@
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div
                 class="
-                                                                                                                              media-body
-                                                                                                                              pb-3
-                                                                                                                              mb-0
-                                                                                                                              small
-                                                                                                                              lh-125
-                                                                                                                              border-bottom border-gray
-                                                                                                                            ">
+                                                                                                                                    media-body
+                                                                                                                                    pb-3
+                                                                                                                                    mb-0
+                                                                                                                                    small
+                                                                                                                                    lh-125
+                                                                                                                                    border-bottom border-gray
+                                                                                                                                  ">
                 <div
                   class="
-                                                                                                                                d-flex
-                                                                                                                                justify-content-between
-                                                                                                                                align-items-center
-                                                                                                                                w-100
-                                                                                                                              ">
+                                                                                                                                      d-flex
+                                                                                                                                      justify-content-between
+                                                                                                                                      align-items-center
+                                                                                                                                      w-100
+                                                                                                                                    ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -1332,34 +1332,70 @@ export default {
     },
 
     createBatchCategory() {
-      // TODO: check if category already exists
 
-      if (this.newBatchCategoryName.length < 1) return;
+      let batchCategoryToAdd = null;
+      let existingCategories = this.categories;
+      let categoriesToPush = [];
 
-      CategoryAPI.create({
-        name: this.newBatchCategoryName,
-        category_type: "batch",
-        supercategory: this.newBatchCategorySupercategory,
-        color: this.newBatchCategoryColor,
-        keypoint_labels: this.newBatchCategoryKeypoint.labels,
-        keypoint_edges: this.newBatchCategoryKeypoint.edges,
-        keypoint_colors: this.newBatchCategoryKeypoint.colors,
-      })
-        .then(() => {
-          this.newBatchCategoryName = "";
-          this.newBatchCategorySupercategory = "";
-          this.newBatchCategoryColor = null;
-          this.newBatchCategoryKeypoint = {};
-          this.updatePage();
+      // check if category already exists
+      if (this.tagsetImporting.allCategories.some(cat => cat.name == this.newBatchCategoryName)) {
+        batchCategoryToAdd = this.tagsetImporting.allCategories.find(x => x.name == this.newBatchCategoryName);
+        console.log(batchCategoryToAdd);
+
+        existingCategories.push(batchCategoryToAdd);
+        existingCategories.forEach(ele => categoriesToPush.push(ele.name));
+
+        axios
+          .post("/api/dataset/" + this.dataset.id, {
+            categories: categoriesToPush,
+            default_annotation_metadata: this.dataset.default_annotation_metadata
+          })
+          .then(() => {
+            this.updatePage();
+          });
+      } else {
+        // create the new category
+
+        if (this.newBatchCategoryName.length < 1) return;
+
+        CategoryAPI.create({
+          name: this.newBatchCategoryName,
+          category_type: "batch",
+          supercategory: this.newBatchCategorySupercategory,
+          color: this.newBatchCategoryColor,
+          keypoint_labels: this.newBatchCategoryKeypoint.labels,
+          keypoint_edges: this.newBatchCategoryKeypoint.edges,
+          keypoint_colors: this.newBatchCategoryKeypoint.colors,
         })
-        .catch(error => {
-          this.axiosReqestError(
-            "Creating Category",
-            error.response.data.message
-          );
-        });
+          .then((response) => {
+            batchCategoryToAdd = response.data;
+            console.log(batchCategoryToAdd);
+            this.newBatchCategoryName = "";
+            this.newBatchCategorySupercategory = "";
+            this.newBatchCategoryColor = null;
+            this.newBatchCategoryKeypoint = {};
 
-        // TODO: now add the category to this dataset's active categories
+            existingCategories.push(batchCategoryToAdd);
+            existingCategories.forEach(ele => categoriesToPush.push(ele.name));
+
+            axios
+              .post("/api/dataset/" + this.dataset.id, {
+                categories: categoriesToPush,
+                default_annotation_metadata: this.dataset.default_annotation_metadata
+              })
+              .then(() => {
+                this.updatePage();
+              });
+          })
+          .catch(error => {
+            this.axiosReqestError(
+              "Creating Category",
+              error.response.data.message
+            );
+          });
+      }
+
+      // TODO: now add the category to this dataset's active categories
     },
 
     mouseMove(event) {
