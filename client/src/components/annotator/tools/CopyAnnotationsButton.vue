@@ -156,7 +156,7 @@ export default {
         this.addProcess(process);
         axios
           .post(
-            "/api/image/copy/" +
+            "/api-screenlife/image/copy/" +
               this.fromId +
               "/" +
               this.imageId +

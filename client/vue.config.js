@@ -3,11 +3,11 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     proxy: {
-      "/api/*": {
-        target: "http://webserver:8081/api/",
+      "/api-screenlife/*": {
+        target: "http://webserver:8081/api-screenlife/",
         changeOrigin: true,
         pathRewrite: {
-          "^/api": ""
+          "^/api-screenlife": ""
         }
       },
       "/socket.io*": {

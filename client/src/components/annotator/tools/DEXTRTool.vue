@@ -61,7 +61,7 @@ export default {
         });
 
         axios
-          .post(`/api/model/dextr/${this.$parent.image.id}`, {
+          .post(`/api-screenlife/model/dextr/${this.$parent.image.id}`, {
             points: pointsList,
             ...this.settings
           })

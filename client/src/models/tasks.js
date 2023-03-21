@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/tasks/";
+const baseURL = "/api-screenlife/tasks/";
 
 export default {
   all() {

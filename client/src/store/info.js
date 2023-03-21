@@ -23,7 +23,7 @@ const mutations = {
   getServerInfo(state) {
     state.loading = true;
     axios
-      .get("/api/info/")
+      .get("/api-screenlife/info/")
       .then(response => {
         state.loading = false;
         state.success = true;

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/annotation/";
+const baseURL = "/api-screenlife/annotation/";
 
 export default {
   create(annotation) {

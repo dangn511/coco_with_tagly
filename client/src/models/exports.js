@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/export";
+const baseURL = "/api-screenlife/export";
 
 export default {
   download(id, dataset) {

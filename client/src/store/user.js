@@ -51,7 +51,7 @@ const mutations = {
   setUserInfo(state) {
     state.isAuthenticatePending = true;
     axios
-      .get("/api/user/")
+      .get("/api-screenlife/user/")
       .then(response => {
         state.user = response.data.user;
         state.isAuthenticated = true;
@@ -72,7 +72,7 @@ const actions = {
     commit("loggingIn");
 
     return axios
-      .post("/api/user/register", {
+      .post("/api-screenlife/user/register", {
         ...user
       })
       .then(response => {
@@ -93,7 +93,7 @@ const actions = {
     commit("loggingIn");
 
     return axios
-      .post("/api/user/login", {
+      .post("/api-screenlife/user/login", {
         ...user
       })
       .then(response => {
@@ -114,7 +114,7 @@ const actions = {
     commit("clearError");
 
     return axios
-      .get("/api/user/logout")
+      .get("/api-screenlife/user/logout")
       .then(() => {
         commit("loggedOut");
         return true;

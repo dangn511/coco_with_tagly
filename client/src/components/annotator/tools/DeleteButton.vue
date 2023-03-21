@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     execute() {
-      axios.delete("/api/image/" + this.image.id).then(() => {});
+      axios.delete("/api-screenlife/image/" + this.image.id).then(() => {});
     }
   }
 };

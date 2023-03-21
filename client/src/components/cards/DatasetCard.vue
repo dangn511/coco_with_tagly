@@ -253,7 +253,7 @@ export default {
     onShare() {
       this.dataset.users = this.sharedUsers;
       axios
-        .post("/api/dataset/" + this.dataset.id + "/share", {
+        .post("/api-screenlife/dataset/" + this.dataset.id + "/share", {
           users: this.sharedUsers
         })
         .then(() => {
@@ -265,7 +265,7 @@ export default {
       this.addProcess(process);
 
       axios
-        .get("/api/dataset/" + this.dataset.id + "/coco")
+        .get("/api-screenlife/dataset/" + this.dataset.id + "/coco")
         .then(reponse => {
           let dataStr =
             "data:text/json;charset=utf-8," +
@@ -276,7 +276,7 @@ export default {
         .finally(() => this.removeProcess(process));
     },
     onDeleteClick() {
-      axios.delete("/api/dataset/" + this.dataset.id).then(() => {
+      axios.delete("/api-screenlife/dataset/" + this.dataset.id).then(() => {
         this.$parent.updatePage();
       });
     },
@@ -284,7 +284,7 @@ export default {
       this.dataset.categories = this.selectedCategories;
 
       axios
-        .post("/api/dataset/" + this.dataset.id, {
+        .post("/api-screenlife/dataset/" + this.dataset.id, {
           categories: this.selectedCategories,
           default_annotation_metadata: this.$refs.defaultAnnotation.export()
         })
@@ -320,7 +320,7 @@ export default {
         return this.notFoundImageUrl;
       }
       if (this.dataset.numberImages > 0) {
-        return "/api/image/" + this.dataset.first_image_id + "?width=250";
+        return "/api-screenlife/image/" + this.dataset.first_image_id + "?width=250";
       }
 
       return this.noImageUrl;

@@ -1389,7 +1389,7 @@ export default {
             console.error(error)
           }).finally(() => {
             axios
-              .post("/api/dataset/" + this.dataset.id, {
+              .post("/api-screenlife/dataset/" + this.dataset.id, {
                 categories: categoriesToPush,
                 default_annotation_metadata: this.dataset.default_annotation_metadata
               })
@@ -1420,7 +1420,7 @@ export default {
         existingCategories.forEach(ele => categoriesToPush.push(ele.name));
 
         axios
-          .post("/api/dataset/" + this.dataset.id, {
+          .post("/api-screenlife/dataset/" + this.dataset.id, {
             categories: categoriesToPush,
             default_annotation_metadata: this.dataset.default_annotation_metadata
           })
@@ -1453,7 +1453,7 @@ export default {
             existingCategories.forEach(ele => categoriesToPush.push(ele.name));
 
             axios
-              .post("/api/dataset/" + this.dataset.id, {
+              .post("/api-screenlife/dataset/" + this.dataset.id, {
                 categories: categoriesToPush,
                 default_annotation_metadata: this.dataset.default_annotation_metadata
               })
@@ -1531,7 +1531,7 @@ export default {
 
       this.zoomImage = imageToShow;
 
-      this.zoomImageURL = "/api/image/" + imageToShow.id + "?width=300";
+      this.zoomImageURL = "/api-screenlife/image/" + imageToShow.id + "?width=300";
       this.zoomImageName = imageToShow.name;
       $('#zoomImageOnRightClick').modal('show');
 

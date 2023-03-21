@@ -401,7 +401,7 @@ export default {
       data.image.category_ids = this.image.categoryIds;
 
       axios
-        .post("/api/annotator/data", JSON.stringify(data))
+        .post("/api-screenlife/annotator/data", JSON.stringify(data))
         .then(() => {
           //TODO: updateUser
           if (callback != null) callback();
@@ -558,7 +558,7 @@ export default {
       this.addProcess(process);
       this.loading.data = true;
       axios
-        .get("/api/annotator/data/" + this.image.id)
+        .get("/api-screenlife/annotator/data/" + this.image.id)
         .then(response => {
           let data = response.data;
           console.log("all response data");
@@ -1092,7 +1092,7 @@ export default {
     this.paper = new paper.PaperScope();
 
     this.image.id = parseInt(this.identifier);
-    this.image.url = "/api/image/" + this.image.id;
+    this.image.url = "/api-screenlife/image/" + this.image.id;
 
     Datasets.allData({
     }).then(response => {

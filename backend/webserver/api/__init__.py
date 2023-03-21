@@ -17,7 +17,7 @@ from .info import api as ns_info
 from config import Config
 
 # Create /api/ space
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('api', __name__, url_prefix='/api-screenlife')
 
 api = Api(
     blueprint,

@@ -119,11 +119,11 @@ export default {
     //TODO: remove this safely
     onDownloadClick() {
       this.downloadURI(
-        "/api/image/" + this.image.id + "?asAttachment=true",
+        "/api-screenlife/image/" + this.image.id + "?asAttachment=true",
         this.image.file_name
       );
 
-      axios.get("/api/image/" + this.image.id + "/coco").then(reponse => {
+      axios.get("/api-screenlife/image/" + this.image.id + "/coco").then(reponse => {
         let dataStr =
           "data:text/json;charset=utf-8," +
           encodeURIComponent(JSON.stringify(reponse.data));
@@ -134,7 +134,7 @@ export default {
       });
     },
     onDeleteClick() {
-      axios.delete("/api/image/" + this.image.id).then(() => {
+      axios.delete("/api-screenlife/image/" + this.image.id).then(() => {
         this.$parent.updatePage();
       });
     }
@@ -143,11 +143,11 @@ export default {
     imageUrl() {
       let d = new Date();
       if (this.showAnnotations) {
-        return `/api/image/${
+        return `/api-screenlife/image/${
           this.image.id
         }?width=250&thumbnail=true&dummy=${d.getTime()}`;
       } else {
-        return "/api/image/" + this.image.id + "?width=250";
+        return "/api-screenlife/image/" + this.image.id + "?width=250";
       }
     },
     annotated() {

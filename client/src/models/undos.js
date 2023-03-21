@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/undo/";
+const baseURL = "/api-screenlife/undo/";
 
 export default {
   all(limit, instance) {

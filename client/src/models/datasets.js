@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/dataset";
+const baseURL = "/api-screenlife/dataset";
 
 export default {
   allData(params) {

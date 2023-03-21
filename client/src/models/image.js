@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/image";
+const baseURL = "/api-screenlife/image";
 
 export default {
     update(id, params) {

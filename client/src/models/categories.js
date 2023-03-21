@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/category/";
+const baseURL = "/api-screenlife/category/";
 
 export default {
   allData(params) {
