@@ -270,17 +270,21 @@
               </template>
 
               <!-- <PanelToggle name="Remove category" v-model="removeBatchCategory" /> -->
-              <template>
-                <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
-                <label for="removeCategoryCheckbox"> Remove Category </label>
-              </template>
+              <div class="row justify-content-md-center">
+                <template>
+                  <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
+                  <label for="removeCategoryCheckbox"> &nbsp; Remove Category </label>
+                </template>
+              </div>
 
-              <div class="row">
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBatchCategories">
+
+              <div class="row justify-content-md-center">
+                <button type="button" class="btn btn-success btn-sm mx-1" data-toggle="modal"
+                  data-target="#createBatchCategories">
                   Create batch category
                 </button>
 
-                <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
+                <button type="button" class="btn btn-primary btn-sm mx-1" @click="tagsetModal">
                   <div v-if="importing.id != null" class="progress">
                     <div class="progress-bar bg-primary" :style="{ width: `${importing.progress}%` }">
                       Importing
@@ -289,14 +293,14 @@
                   <div v-else>Import tagset</div>
                 </button>
 
-                <button type="button" class="btn btn-primary btn-sm" @click="exportTagsetModal">
+                <button type="button" class="btn btn-primary btn-sm mx-1" @click="exportTagsetModal">
                   <div>Export tagset</div>
                 </button>
               </div>
             </div>
 
             <div class="col-3 border-left border-right">
-              <button type="button" class="btn btn-secondary btn-sm" @click="createScanTask">
+              <button type="button" class="btn btn-secondary btn-sm mx-1" @click="createScanTask">
                 <div v-if="scan.id != null" class="progress">
                   <div class="progress-bar bg-secondary" :style="{ width: `${scan.progress}%` }">
                     Scanning
@@ -305,7 +309,7 @@
                 <div v-else>Scan</div>
               </button>
 
-              <button type="button" class="btn btn-info btn-sm" @click="exportModal">
+              <button type="button" class="btn btn-info btn-sm mx-1" @click="exportModal">
                 <div v-if="exporting.id != null" class="progress">
                   <div class="progress-bar bg-dark" :style="{ width: `${exporting.progress}%` }">
                     Exporting
@@ -314,10 +318,10 @@
                 <div v-else>Export COCO</div>
               </button>
 
-              <button type="button" class="btn btn-info btn-sm" @click="exportModal">
+              <!-- <button type="button" class="btn btn-info btn-sm" @click="exportModal">
 
                 <div>Export CSV</div>
-              </button>
+              </button> -->
             </div>
           </div>
 
@@ -339,7 +343,7 @@
           </p> -->
 
           <div v-else>
-            <div class="row justify-content-md-center">
+            <div class="row justify-content-md-center my-2">
               <Pagination :pages="pages" @pagechange="updatePage" />
             </div>
 
@@ -501,20 +505,20 @@
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
               <div
                 class="
-                                                                                                                                    media-body
-                                                                                                                                    pb-3
-                                                                                                                                    mb-0
-                                                                                                                                    small
-                                                                                                                                    lh-125
-                                                                                                                                    border-bottom border-gray
-                                                                                                                                  ">
+                                                                                                                                      media-body
+                                                                                                                                      pb-3
+                                                                                                                                      mb-0
+                                                                                                                                      small
+                                                                                                                                      lh-125
+                                                                                                                                      border-bottom border-gray
+                                                                                                                                    ">
                 <div
                   class="
-                                                                                                                                      d-flex
-                                                                                                                                      justify-content-between
-                                                                                                                                      align-items-center
-                                                                                                                                      w-100
-                                                                                                                                    ">
+                                                                                                                                        d-flex
+                                                                                                                                        justify-content-between
+                                                                                                                                        align-items-center
+                                                                                                                                        w-100
+                                                                                                                                      ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -872,12 +876,11 @@
               Categories currently assigned to this dataset:
             </p>
             <template v-for="(category, index) in categories">
-                <span v-if="category.category_type == 'batch'" :key="index"
-                  class="badge badge-pill badge-primary category-badge"
-                  :style="{ 'background-color': category.color }">
-                  {{ category.name }}
-                </span>
-              </template>
+              <span v-if="category.category_type == 'batch'" :key="index"
+                class="badge badge-pill badge-primary category-badge" :style="{ 'background-color': category.color }">
+                {{ category.name }}
+              </span>
+            </template>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="exportTagset" data-dismiss="modal">
@@ -1257,7 +1260,7 @@ export default {
         .catch((error) => {
           this.axiosReqestError("Exporting Tagset", error.response.data.message);
         })
-        
+
     },
 
 
@@ -1297,7 +1300,7 @@ export default {
       $("#tagsetDownload").modal("show");
     },
 
-    
+
 
 
     importCOCO() {
