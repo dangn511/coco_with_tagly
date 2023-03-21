@@ -258,6 +258,7 @@
               </button>
 
             </div>
+
             <div class="col-6 border-left border-right">
               <template v-for="(category, index) in categories">
                 <span v-if="category.category_type == 'batch'" :key="index"
@@ -274,15 +275,26 @@
                 <label for="removeCategoryCheckbox"> Remove Category </label>
               </template>
 
-              <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
-                <div v-if="importing.id != null" class="progress">
-                  <div class="progress-bar bg-primary" :style="{ width: `${importing.progress}%` }">
-                    Importing
+              <div class="row">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createBatchCategories">
+                  Create batch category
+                </button>
+
+                <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
+                  <div v-if="importing.id != null" class="progress">
+                    <div class="progress-bar bg-primary" :style="{ width: `${importing.progress}%` }">
+                      Importing
+                    </div>
                   </div>
-                </div>
-                <div v-else>Import tagset</div>
-              </button>
+                  <div v-else>Import tagset</div>
+                </button>
+
+                <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
+                  <div>Export tagset</div>
+                </button>
+              </div>
             </div>
+
             <div class="col-3 border-left border-right">
               <button type="button" class="btn btn-secondary btn-sm" @click="createScanTask">
                 <div v-if="scan.id != null" class="progress">
@@ -303,8 +315,8 @@
               </button>
 
               <button type="button" class="btn btn-info btn-sm" @click="exportModal">
-                
-                <div >Export CSV</div>
+
+                <div>Export CSV</div>
               </button>
             </div>
           </div>
@@ -487,21 +499,22 @@
             <div class="media text-muted pt-3" v-for="user in users">
               <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/256x256/plain/user.png"
                 class="mr-2 rounded" style="width: 32px; height: 32px" />
-              <div class="
-                                                                                                                        media-body
-                                                                                                                        pb-3
-                                                                                                                        mb-0
-                                                                                                                        small
-                                                                                                                        lh-125
-                                                                                                                        border-bottom border-gray
-                                                                                                                      ">
+              <div
+                class="
+                                                                                                                              media-body
+                                                                                                                              pb-3
+                                                                                                                              mb-0
+                                                                                                                              small
+                                                                                                                              lh-125
+                                                                                                                              border-bottom border-gray
+                                                                                                                            ">
                 <div
                   class="
-                                                                                                                          d-flex
-                                                                                                                          justify-content-between
-                                                                                                                          align-items-center
-                                                                                                                          w-100
-                                                                                                                        ">
+                                                                                                                                d-flex
+                                                                                                                                justify-content-between
+                                                                                                                                align-items-center
+                                                                                                                                w-100
+                                                                                                                              ">
                   <div class="text-gray-dark">
                     <strong>{{ user.name }}</strong> @{{ user.username }}
                   </div>
@@ -645,7 +658,7 @@
           <div v-else>Export COCO</div>
         </button>
 
-        
+
       </div>
       <hr />
       <h6 class="sidebar-title text-center">Subdirectories</h6>
@@ -683,6 +696,55 @@
     <!-- <modal name="zoom-image-modal">
       <img :src="this.$modal.params.image" alt="My Image">
     </modal> -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="createBatchCategories">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Creating a Batch Category</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>Name:</label>
+                <input v-model="newBatchCategoryName" class="form-control"
+                  :class="{ 'is-invalid': newBatchCategoryName.trim().length === 0 }" required="true"
+                  placeholder="Name" />
+              </div>
+
+              <div class="form-group">
+                <label>Supercategory:</label>
+                <input v-model="newBatchCategorySupercategory" class="form-control" placeholder="Supercategory" />
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Color:</label>
+                <div class="col-sm-9">
+                  <input v-model="newBatchCategoryColor" type="color" class="form-control" />
+                </div>
+              </div>
+
+              <!-- <div class="form-group">
+                <KeypointsDefinition ref="keypoints" v-model="newBatchCategoryKeypoint" element-id="keypoints"
+                  placeholder="Add a keypoint"></KeypointsDefinition>
+              </div> -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" :disabled="!isBatchFormValid"
+              :class="{ disabled: !isBatchFormValid }" @click="createBatchCategory">
+              Create Batch Category
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="zoomImageOnRightClick">
       <div class="modal-dialog" role="document">
@@ -814,6 +876,10 @@
                 <input type="checkbox" class="form-check-input" v-model="exporting.with_empty_images" />
                 <label class="form-check-label">export with not annotated images</label>
               </div>
+              <div>
+                <input type="checkbox" class="form-check-input" v-model="exporting.as_csv" />
+                <label class="form-check-label">export as .csv file</label>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -928,6 +994,7 @@ export default {
         progress: 0,
         with_empty_images: false,
         id: null,
+        as_csv: false
       },
       tagsetImporting: {
         jsonData: {},
@@ -969,6 +1036,15 @@ export default {
       removeBatchCategory: false,
 
       activeBatchCategory: null,
+
+      newBatchCategoryName: "",
+      newBatchCategorySupercategory: "",
+      newBatchCategoryColor: null,
+      newBatchCategoryKeypoint: {
+        labels: [],
+        edges: [],
+        colors: []
+      },
     };
   },
   methods: {
@@ -1112,10 +1188,13 @@ export default {
     },
     exportCOCO() {
       $("#exportDataset").modal("hide");
+      console.log("exporting as csv");
+      console.log(this.exporting.as_csv);
       Dataset.exportingCOCO(
         this.dataset.id,
         this.exporting.categories,
-        this.exporting.with_empty_images
+        this.exporting.with_empty_images,
+        this.exporting.as_csv
       )
         .then((response) => {
           let id = response.data.id;
@@ -1246,92 +1325,41 @@ export default {
 
           })
 
-        // console.log("after updated new batch cats");
-        // console.log(existingAnnoCategories);
-
-        // axios
-        //   .post("/api/dataset/" + this.dataset.id, {
-        //     categories: existingAnnoCategories,
-        //     default_annotation_metadata: this.dataset.default_annotation_metadata
-        //   })
-        //   .then(() => {
-        //     this.updatePage();
-        //   });
-
-
-
-
-
-
-        // TODO: check if this category already exist in all categories
-
-        // for (let tag of this.tagsetImporting.categories) {
-        //   CategoryAPI.create({
-        //     name: tag.name,
-        //     category_type: "batch",
-        //     supercategory: "",
-        //     color: tag.color,
-        //     keypoint_labels: [],
-        //     keypoint_edges: [],
-        //     keypoint_colors: [],
-        //   }).then((response) => {
-        //     let data = response.data;
-        //     console.log("data coming back from CategoryAPI");
-        //     console.log(data);
-
-        //     // now add the newly created categories to this dataset
-        //     existingAnnoCategories.push(data);
-
-
-        //     //
-        //     // this.newBatchCategoryName = "";
-        //     // this.newBatchCategorySupercategory = "";
-        //     // this.newBatchCategoryColor = null;
-        //     // this.newBatchCategoryKeypoint = {};
-        //     // this.updatePage();
-        //   })
-        //     .catch(error => {
-        //       this.axiosReqestError(
-        //         "Creating Category",
-        //         error.response.data.message
-        //       );
-        //     });
-        // }
-
-
-        // console.log("after updated new batch cats");
-        // console.log(existingAnnoCategories);
-
-        // axios
-        //   .post("/api/dataset/" + this.dataset.id, {
-        //     categories: existingAnnoCategories,
-        //     default_annotation_metadata: this.dataset.default_annotation_metadata
-        //   })
-        //   .then(() => {
-        //     this.updatePage();
-        //   });
-
-
-
       };
 
       reader.readAsText(jsonFileRaw);
 
+    },
 
-      // let jsonFileRaw = uploaded.files[0];
+    createBatchCategory() {
+      // TODO: check if category already exists
 
-      // var newTags = JSON.parse(jsonFileRaw).text;
-      // console.log(newTags);
+      if (this.newBatchCategoryName.length < 1) return;
 
-      // Dataset.uploadTagset(this.dataset.id, uploaded.files[0])
-      //   .then((response) => {
-      //     let id = response.data.id;
-      //     this.tagsetImporting.id = id;
-      //   })
-      //   .catch((error) => {
-      //     this.axiosReqestError("Importing tagset", error.response.data.message);
-      //   })
-      //   .finally(() => this.removeProcess(process));
+      CategoryAPI.create({
+        name: this.newBatchCategoryName,
+        category_type: "batch",
+        supercategory: this.newBatchCategorySupercategory,
+        color: this.newBatchCategoryColor,
+        keypoint_labels: this.newBatchCategoryKeypoint.labels,
+        keypoint_edges: this.newBatchCategoryKeypoint.edges,
+        keypoint_colors: this.newBatchCategoryKeypoint.colors,
+      })
+        .then(() => {
+          this.newBatchCategoryName = "";
+          this.newBatchCategorySupercategory = "";
+          this.newBatchCategoryColor = null;
+          this.newBatchCategoryKeypoint = {};
+          this.updatePage();
+        })
+        .catch(error => {
+          this.axiosReqestError(
+            "Creating Category",
+            error.response.data.message
+          );
+        });
+
+        // TODO: now add the category to this dataset's active categories
     },
 
     mouseMove(event) {
@@ -1514,6 +1542,12 @@ export default {
       let tags = {};
       this.categories.forEach((c) => (tags[c.id] = c.name));
       return tags;
+    },
+
+    isBatchFormValid() {
+      return (
+        this.newBatchCategoryName.length !== 0
+      );
     },
   },
   sockets: {

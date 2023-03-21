@@ -14,6 +14,7 @@ import numpy as np
 import time
 import json
 import os
+import csv
 
 from celery import shared_task
 from ..socket import create_socket
@@ -21,7 +22,7 @@ from mongoengine import Q
 
 
 @shared_task
-def export_annotations(task_id, dataset_id, categories, with_empty_images=False):
+def export_annotations(task_id, dataset_id, categories, with_empty_images=False, as_csv=False):
 
     task = TaskModel.objects.get(id=task_id)
     dataset = DatasetModel.objects.get(id=dataset_id)
@@ -116,16 +117,51 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False)
     task.info(
         f"Done export {total_annotations} annotations and {total_images} images from {dataset.name}")
 
-    timestamp = time.time()
-    directory = f"{dataset.directory}.exports/"
-    file_path = f"{directory}coco-{timestamp}.json"
+    # this is where the saving begins
 
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not as_csv:
 
-    task.info(f"Writing export to file {file_path}")
-    with open(file_path, 'w') as fp:
-        json.dump(coco, fp)
+        timestamp = time.time()
+        directory = f"{dataset.directory}.exports/"
+        file_path = f"{directory}coco-{timestamp}.json"
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        task.info(f"Writing export to file {file_path}")
+        with open(file_path, 'w') as fp:
+            json.dump(coco, fp)
+
+    else:
+        timestamp = time.time()
+        directory = f"{dataset.directory}.exports/"
+        file_path = f"{directory}coco-{timestamp}.csv"
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        im_dataset = []
+        im_id = []
+        im_filename = []
+        im_tags = []
+
+        # convert that coco into csv
+        for im in coco.get('images'):
+            im_dataset.append(im['dataset_id'])
+            im_id.append(im['id'])
+            im_filename.append(im['file_name'])
+            im_annotations = [i['name'] for i in im['batch_annotations']]
+            im_tags.append(", ".join(im_annotations))
+
+        rows_to_write = zip(im_dataset, im_id, im_filename, im_tags)
+
+        with open(file_path, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(['dataset_id', 'image_id', 'file_name', 'labels'])
+            for row in rows_to_write:
+                writer.writerow(row)
+
+
 
     task.info("Creating export object")
     export = ExportModel(dataset_id=dataset.id, path=file_path, tags=[
@@ -311,6 +347,7 @@ def import_annotations(task_id, dataset_id, coco_json):
         )
 
     task.set_progress(100, socket=socket)
+
 
 @shared_task
 def import_batchtags(task_id, dataset_id, tagset_json):

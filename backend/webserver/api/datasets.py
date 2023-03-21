@@ -50,6 +50,7 @@ tagset_upload.add_argument('tagset', location='files', type=FileStorage, require
 export = reqparse.RequestParser()
 export.add_argument('categories', type=str, default=None, required=False, help='Ids of categories to export')
 export.add_argument('with_empty_images', type=inputs.boolean, default=False, required=False, help='Export with un-annotated images')
+export.add_argument('as_csv', type=inputs.boolean, default=False, required=False, help='Export as csv file')
 
 update_dataset = reqparse.RequestParser()
 update_dataset.add_argument('categories', location='json', type=list, help="New list of categories")
@@ -525,6 +526,7 @@ class DatasetExport(Resource):
         args = export.parse_args()
         categories = args.get('categories')
         with_empty_images = args.get('with_empty_images', False)
+        as_csv = args.get('as_csv', False)
         
         if len(categories) == 0:
             categories = []
@@ -537,7 +539,7 @@ class DatasetExport(Resource):
         if not dataset:
             return {'message': 'Invalid dataset ID'}, 400
         
-        return dataset.export_coco(categories=categories, with_empty_images=with_empty_images)
+        return dataset.export_coco(categories=categories, with_empty_images=with_empty_images, as_csv=as_csv)
     
     @api.expect(coco_upload)
     @login_required
