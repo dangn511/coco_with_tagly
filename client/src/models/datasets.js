@@ -33,6 +33,9 @@ export default {
   exportingCOCO(id, categories, with_empty_images, as_csv) {
     return axios.get(`${baseURL}/${id}/export?categories=${categories}&with_empty_images=${with_empty_images}&as_csv=${as_csv}`);
   },
+  exportingTagset(id) {
+    return axios.get(`${baseURL}/${id}/export_tagset`);
+  },
   getCoco(id) {
     return axios.get(`${baseURL}/${id}/coco`);
   },

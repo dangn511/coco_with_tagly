@@ -105,6 +105,28 @@ class DatasetModel(DynamicDocument):
             "id": task.id,
             "name": task.name
         }
+    
+    def export_tagset(self):
+
+        from workers.tasks import export_tagset
+
+        # if categories is None or len(categories) == 0:
+        categories = self.categories
+
+        task = TaskModel(
+            name=f"Exporting tagset for {self.name} into JSON format",
+            dataset_id=self.id,
+            group="Annotation Export"
+        )
+        task.save()
+
+        cel_task = export_tagset.delay(task.id, self.id, categories)
+
+        return {
+            "celery_id": cel_task.id,
+            "id": task.id,
+            "name": task.name
+        }
 
     def scan(self):
 

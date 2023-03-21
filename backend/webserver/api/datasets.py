@@ -553,6 +553,31 @@ class DatasetExport(Resource):
             return {'message': 'Invalid dataset ID'}, 400
 
         return dataset.import_coco(json.load(coco))
+    
+@api.route('/<int:dataset_id>/export_tagset')
+class TagsetExport(Resource):
+
+    @login_required
+    def get(self, dataset_id):
+
+        # args = export.parse_args()
+        # categories = args.get('categories')
+        # with_empty_images = args.get('with_empty_images', False)
+        # as_csv = args.get('as_csv', False)
+        
+        # if len(categories) == 0:
+        #     categories = []
+
+        # if len(categories) > 0 or isinstance(categories, str):
+        #     categories = [int(c) for c in categories.split(',')]
+
+        dataset = DatasetModel.objects(id=dataset_id).first()
+        
+        if not dataset:
+            return {'message': 'Invalid dataset ID'}, 400
+        
+        return dataset.export_tagset()
+    
 
 
 @api.route('/<int:dataset_id>/coco')

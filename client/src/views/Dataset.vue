@@ -289,7 +289,7 @@
                   <div v-else>Import tagset</div>
                 </button>
 
-                <button type="button" class="btn btn-primary btn-sm" @click="tagsetModal">
+                <button type="button" class="btn btn-primary btn-sm" @click="exportTagsetModal">
                   <div>Export tagset</div>
                 </button>
               </div>
@@ -856,6 +856,41 @@
       </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="tagsetDownload">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Export tagset</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Download only categories currently assigned to this dataset
+
+              Categories currently assigned to this dataset:
+            </p>
+            <template v-for="(category, index) in categories">
+                <span v-if="category.category_type == 'batch'" :key="index"
+                  class="badge badge-pill badge-primary category-badge"
+                  :style="{ 'background-color': category.color }">
+                  {{ category.name }}
+                </span>
+              </template>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="exportTagset" data-dismiss="modal">
+              Download
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" tabindex="-1" role="dialog" id="exportDataset">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -1188,8 +1223,8 @@ export default {
     },
     exportCOCO() {
       $("#exportDataset").modal("hide");
-      console.log("exporting as csv");
-      console.log(this.exporting.as_csv);
+      // console.log("exporting as csv");
+      // console.log(this.exporting.as_csv);
       Dataset.exportingCOCO(
         this.dataset.id,
         this.exporting.categories,
@@ -1205,6 +1240,27 @@ export default {
         })
         .finally(() => this.removeProcess(process));
     },
+
+    exportTagset() {
+      $("#tagsetDownload").modal("hide");
+      console.log("exporting following categories");
+      console.log(this.categories);
+
+      Dataset.exportingTagset(
+        this.dataset.id
+      )
+        .then((response) => {
+          console.log(response);
+          // let id = response.data.id;
+          // this.exporting.id = id;
+        })
+        .catch((error) => {
+          this.axiosReqestError("Exporting Tagset", error.response.data.message);
+        })
+        
+    },
+
+
     removeFolder(folder) {
       let index = this.folders.indexOf(folder);
       this.folders.splice(index + 1, this.folders.length);
@@ -1229,6 +1285,21 @@ export default {
 
       $("#tagsetUpload").modal("show");
     },
+
+    exportTagsetModal() {
+      // console.log("importModal importing.id ");
+      // console.log(this.importing.id);
+      // if (this.tagsetImporting.id != null) {
+      //   this.$router.push({ path: "/tasks", query: { id: this.tagsetImporting.id } });
+      //   return;
+      // }
+
+      $("#tagsetDownload").modal("show");
+    },
+
+    
+
+
     importCOCO() {
       let uploaded = document.getElementById("coco");
       console.log("coco to be updated");

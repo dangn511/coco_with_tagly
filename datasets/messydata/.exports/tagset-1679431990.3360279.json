@@ -1,0 +1,70 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "anno1",
+            "category_type": "annotation",
+            "supercategory": "",
+            "color": "#44eff1",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 2,
+            "name": "anno2",
+            "category_type": "annotation",
+            "supercategory": "",
+            "color": "#d159f4",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 56,
+            "name": "testtagD",
+            "category_type": "batch",
+            "supercategory": "",
+            "color": "#1a8b99",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 57,
+            "name": "testtagA",
+            "category_type": "batch",
+            "supercategory": "",
+            "color": "#AAAAAA",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 58,
+            "name": "testtagB",
+            "category_type": "batch",
+            "supercategory": "",
+            "color": "#5a3776",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 59,
+            "name": "testtagC",
+            "category_type": "batch",
+            "supercategory": "",
+            "color": "#5d9ab1",
+            "metadata": {},
+            "creator": "aaaaaa",
+            "deleted": false,
+            "keypoint_colors": []
+        }
+    ]
+}

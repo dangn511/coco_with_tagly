@@ -170,6 +170,153 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False,
 
     task.set_progress(100, socket=socket)
 
+@shared_task
+def export_tagset(task_id, dataset_id, categories):
+
+    task = TaskModel.objects.get(id=task_id)
+    dataset = DatasetModel.objects.get(id=dataset_id)
+
+    task.update(status="PROGRESS")
+    socket = create_socket()
+
+    task.info("Beginning Export of tagset")
+
+    # db_categories = CategoryModel.objects(id__in=categories, deleted=False) \
+    #     .only(*CategoryModel.COCO_PROPERTIES)
+    # db_images = ImageModel.objects(
+    #     deleted=False, dataset_id=dataset.id).only(
+    #     *ImageModel.COCO_PROPERTIES)
+    db_categories = CategoryModel.objects(id__in=categories, deleted=False)
+    # db_images = ImageModel.objects(
+    #     deleted=False, dataset_id=dataset.id)
+    # db_annotations = AnnotationModel.objects(
+    #     deleted=False, category_id__in=categories)
+
+    total_items = db_categories.count()
+
+    tagset = {
+        'categories': []
+    }
+
+    # total_items += db_images.count()
+    progress = 0
+
+    # iterate though all categoires and upsert
+    category_names = []
+    for category in fix_ids(db_categories):
+
+        if len(category.get('keypoint_labels', [])) > 0:
+            category['keypoints'] = category.pop('keypoint_labels', [])
+            category['skeleton'] = category.pop('keypoint_edges', [])
+        else:
+            if 'keypoint_edges' in category:
+                del category['keypoint_edges']
+            if 'keypoint_labels' in category:
+                del category['keypoint_labels']
+
+        task.info(f"Adding category: {category.get('name')}")
+        tagset.get('categories').append(category)
+        category_names.append(category.get('name'))
+
+        progress += 1
+        task.set_progress((progress / total_items) * 100, socket=socket)
+
+    # total_annotations = db_annotations.count()
+    # total_images = db_images.count()
+    # for image in db_images:
+    #     image = fix_ids(image)
+
+    #     progress += 1
+    #     task.set_progress((progress / total_items) * 100, socket=socket)
+
+    #     annotations = db_annotations.filter(image_id=image.get('id'))\
+    #         .only(*AnnotationModel.COCO_PROPERTIES)
+    #     annotations = fix_ids(annotations)
+
+    #     if len(annotations) == 0:
+    #         if with_empty_images:
+    #             coco.get('images').append(image)
+    #         continue
+
+    #     num_annotations = 0
+    #     for annotation in annotations:
+
+    #         has_keypoints = len(annotation.get('keypoints', [])) > 0
+    #         has_segmentation = len(annotation.get('segmentation', [])) > 0
+
+    #         if has_keypoints or has_segmentation:
+
+    #             if not has_keypoints:
+    #                 if 'keypoints' in annotation:
+    #                     del annotation['keypoints']
+    #             else:
+    #                 arr = np.array(annotation.get('keypoints', []))
+    #                 arr = arr[2::3]
+    #                 annotation['num_keypoints'] = len(arr[arr > 0])
+
+    #             num_annotations += 1
+    #             coco.get('annotations').append(annotation)
+
+    #     task.info(
+    #         f"Exporting {num_annotations} annotations for image {image.get('id')}")
+    #     coco.get('images').append(image)
+
+    task.info(
+        f"Done export {total_items} categories from {dataset.name}")
+
+    # this is where the saving begins
+
+    # if not as_csv:
+
+    timestamp = time.time()
+    directory = f"{dataset.directory}.exports/"
+    file_path = f"{directory}tagset-{timestamp}.json"
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    task.info(f"Writing export to file {file_path}")
+    with open(file_path, 'w') as fp:
+        json.dump(tagset, fp)
+
+    # else:
+    #     timestamp = time.time()
+    #     directory = f"{dataset.directory}.exports/"
+    #     file_path = f"{directory}coco-{timestamp}.csv"
+
+    #     if not os.path.exists(directory):
+    #         os.makedirs(directory)
+
+    #     im_dataset = []
+    #     im_id = []
+    #     im_filename = []
+    #     im_tags = []
+
+    #     # convert that coco into csv
+    #     for im in coco.get('images'):
+    #         im_dataset.append(im['dataset_id'])
+    #         im_id.append(im['id'])
+    #         im_filename.append(im['file_name'])
+    #         im_annotations = [i['name'] for i in im['batch_annotations']]
+    #         im_tags.append(", ".join(im_annotations))
+
+    #     rows_to_write = zip(im_dataset, im_id, im_filename, im_tags)
+
+    #     with open(file_path, "w", newline="") as f:
+    #         writer = csv.writer(f)
+    #         writer.writerow(['dataset_id', 'image_id', 'file_name', 'labels'])
+    #         for row in rows_to_write:
+    #             writer.writerow(row)
+
+
+
+    task.info("Creating export object")
+    export = ExportModel(dataset_id=dataset.id, path=file_path, tags=[
+                         "Tagset", *category_names])
+    export.save()
+
+    task.set_progress(100, socket=socket)
+
 
 @shared_task
 def import_annotations(task_id, dataset_id, coco_json):
@@ -531,4 +678,4 @@ def import_batchtags(task_id, dataset_id, tagset_json):
     task.set_progress(100, socket=socket)
 
 
-__all__ = ["export_annotations", "import_annotations", "import_batchtags"]
+__all__ = ["export_annotations", "import_annotations", "import_batchtags", "export_tagset"]
