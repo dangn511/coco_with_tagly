@@ -721,7 +721,7 @@
 
               <div class="form-group">
                 <label>Supercategory:</label>
-                <input v-model="newBatchCategorySupercategory" class="form-control" placeholder="Supercategory" />
+                <input v-model="newBatchCategorySupercategory" class="form-control" :placeholder="newBatchCategorySupercategory" />
               </div>
 
               <div class="form-group row">
@@ -1037,6 +1037,7 @@ export default {
       tagsetImporting: {
         jsonData: {},
         categories: [],
+        supercategory: null,
         allCategories: [],
         progress: 0,
         with_empty_images: false,
@@ -1334,6 +1335,8 @@ export default {
         this.tagsetImporting.jsonData = json;
         // console.log(this.tagsetImporting.jsonData);
         this.tagsetImporting.categories = this.tagsetImporting.jsonData.tags;
+        this.tagsetImporting.supercategory = this.tagsetImporting.jsonData.supercategory;
+        this.newBatchCategorySupercategory = this.tagsetImporting.jsonData.supercategory;
         // console.log(this.tagsetImporting.categories);
 
 
@@ -1359,7 +1362,7 @@ export default {
               CategoryAPI.create({
                 name: tag.name,
                 category_type: "batch",
-                supercategory: "",
+                supercategory: this.tagsetImporting.supercategory,
                 color: tag.color,
                 keypoint_labels: [],
                 keypoint_edges: [],
@@ -1407,6 +1410,8 @@ export default {
 
     createBatchCategory() {
 
+      $("#createBatchCategories").modal("hide");
+
       let batchCategoryToAdd = null;
       let existingCategories = this.categories;
       let categoriesToPush = [];
@@ -1435,7 +1440,7 @@ export default {
         CategoryAPI.create({
           name: this.newBatchCategoryName,
           category_type: "batch",
-          supercategory: this.newBatchCategorySupercategory,
+          supercategory: this.tagsetImporting.supercategory,
           color: this.newBatchCategoryColor,
           keypoint_labels: this.newBatchCategoryKeypoint.labels,
           keypoint_edges: this.newBatchCategoryKeypoint.edges,

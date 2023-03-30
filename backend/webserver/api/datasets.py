@@ -50,7 +50,8 @@ tagset_upload.add_argument('tagset', location='files', type=FileStorage, require
 export = reqparse.RequestParser()
 export.add_argument('categories', type=str, default=None, required=False, help='Ids of categories to export')
 export.add_argument('with_empty_images', type=inputs.boolean, default=False, required=False, help='Export with un-annotated images')
-export.add_argument('as_csv', type=inputs.boolean, default=False, required=False, help='Export as csv file')
+export.add_argument('as_csv', type=inputs.boolean, default=False, required=False, help='Export annotations as CSV')
+
 
 update_dataset = reqparse.RequestParser()
 update_dataset.add_argument('categories', location='json', type=list, help="New list of categories")
@@ -539,7 +540,7 @@ class DatasetExport(Resource):
         if not dataset:
             return {'message': 'Invalid dataset ID'}, 400
         
-        return dataset.export_coco(categories=categories, with_empty_images=with_empty_images, as_csv=as_csv)
+        return dataset.export_coco(categories=categories, with_empty_images=with_empty_images)
     
     @api.expect(coco_upload)
     @login_required
@@ -553,31 +554,6 @@ class DatasetExport(Resource):
             return {'message': 'Invalid dataset ID'}, 400
 
         return dataset.import_coco(json.load(coco))
-    
-@api.route('/<int:dataset_id>/export_tagset')
-class TagsetExport(Resource):
-
-    @login_required
-    def get(self, dataset_id):
-
-        # args = export.parse_args()
-        # categories = args.get('categories')
-        # with_empty_images = args.get('with_empty_images', False)
-        # as_csv = args.get('as_csv', False)
-        
-        # if len(categories) == 0:
-        #     categories = []
-
-        # if len(categories) > 0 or isinstance(categories, str):
-        #     categories = [int(c) for c in categories.split(',')]
-
-        dataset = DatasetModel.objects(id=dataset_id).first()
-        
-        if not dataset:
-            return {'message': 'Invalid dataset ID'}, 400
-        
-        return dataset.export_tagset()
-    
 
 
 @api.route('/<int:dataset_id>/coco')
