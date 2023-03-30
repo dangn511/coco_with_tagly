@@ -1,0 +1,70 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "anno_cat1",
+            "category_type": "annotation",
+            "supercategory": "",
+            "color": "#16ab4e",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 3,
+            "name": "anno_cat2",
+            "category_type": "annotation",
+            "supercategory": "",
+            "color": "#7dc609",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 6,
+            "name": "annocat1",
+            "category_type": "annotation",
+            "supercategory": "",
+            "color": "#e35149",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 11,
+            "name": "batchbbb",
+            "category_type": "batch",
+            "supercategory": "supercat1",
+            "color": "#5a3776",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 12,
+            "name": "batchaaa",
+            "category_type": "batch",
+            "supercategory": "supercat1",
+            "color": "#AAAAAA",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        },
+        {
+            "id": 15,
+            "name": "batch11111",
+            "category_type": "batch",
+            "supercategory": "supercat1",
+            "color": "#5a44dc",
+            "metadata": {},
+            "creator": "admin",
+            "deleted": false,
+            "keypoint_colors": []
+        }
+    ]
+}
