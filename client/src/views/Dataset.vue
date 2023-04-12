@@ -1504,7 +1504,7 @@ export default {
 
 
     // handling the redirection in dropdown menu
-    // TODO: make this work
+
     redirectDataset(event) {
       console.log("hello redirectDataset");
       console.log(this.selectedDataset);

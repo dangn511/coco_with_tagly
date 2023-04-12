@@ -313,14 +313,6 @@ export default {
     }
   },
 
-  beforeRouteUpdate(to, from) {
-    console.log("toParams");
-    console.log(to);
-    console.log("previousParams");
-    console.log(from);
-    // this.dataset.id = parseInt(this.identifier);
-    // this.updatePage();
-  },
   computed: {
     percent() {
       return 100 * (this.dataset.numberAnnotated / this.dataset.numberImages);

@@ -122,7 +122,8 @@
 
     <div class="middle-panel" :style="{ cursor: cursor }">
       <div class="row bg-dark" style="padding-top: 56px; height: 30px">
-        <div class="col-3 text-light">
+        <!-- Is this necessary? -->
+        <!-- <div class="col-3 text-light">
           Dataset&nbsp;&nbsp;
 
           <select v-model="selectedDataset">
@@ -130,30 +131,18 @@
 
           </select>
 
-        </div>
+        </div> -->
         <div class="col-6 border-right text-light">
           Image&nbsp;&nbsp;
-          <select v-model="selectedDataset">
+          <select v-model="selectedImage">
             <option v-for="mImage in allImages" :value="mImage" :key="mImage.id"
             :style="{ 'background-color': mImage.annotated ? 'greenyellow' : 'lightcoral' }">{{ mImage.file_name }}</option>
 
           </select>
-          <!-- <template v-for="(category, index) in categories">
-          <span v-if="category.category_type == 'batch'" :key="index"
-            class="badge badge-pill badge-primary category-badge"
-            :class="{ 'border border-dark border-4': activeBatchCategory == category }"
-            :style="{ 'background-color': category.color }" @click="activeBatchCategory = category">
-            {{ category.name }}
-          </span>
-        </template>
 
-        <template>
-          <input type="checkbox" id="removeCategoryCheckbox" v-model="removeBatchCategory" />
-          <label for="removeCategoryCheckbox"> Remove Category </label>
-        </template> -->
         </div>
         <div class="col-1 border-left">
-          <button type="button" class="btn btn-success btn-sm mx-3">
+          <button type="button" class="btn btn-success btn-sm mx-3" @click="redirectImage">
             Go
           </button>
           <!-- <button type="button" class="btn btn-secondary" @click="createScanTask">
@@ -345,7 +334,7 @@ export default {
       allDatasets: {},
       selectedDataset: {},
       allImages: {},
-      selectedImages: {},
+      selectedImage: {},
     };
   },
   methods: {
@@ -942,7 +931,20 @@ export default {
     previousImage() {
       if (this.image.previous != null)
         this.$refs.filetitle.route(this.image.previous);
-    }
+    },
+
+    redirectImage(event) {
+      console.log("hello redirectImage");
+      console.log(this.selectedImage);
+
+      let identifier = this.selectedImage.id;
+
+      if (identifier != null) {
+        console.log(identifier);
+        this.$refs.filetitle.route(identifier);
+      }
+
+    },
   },
   watch: {
     doneLoading(done) {
