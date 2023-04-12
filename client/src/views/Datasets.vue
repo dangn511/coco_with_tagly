@@ -272,6 +272,7 @@ export default {
       this.updatePage();
     }
   },
+  
   computed: {
     directory() {
       let closing = this.create.name.length > 0 ? "/" : "";

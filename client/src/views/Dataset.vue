@@ -1511,12 +1511,16 @@ export default {
 
       // go to the dataset page proper
       let identifier = this.selectedDataset.id;
+      // let identifier = 4;
 
-      this.$router.push({ name: "dataset", params: { identifier } })
-        .then(() => {
-          console.log('Updated route ', this.$route)
-          // process the updated route params
-        });
+      // this.$router.push({ name: "dataset", params: { identifier } });
+      this.$router.replace({ params: { identifier } });
+
+      // this.$router.push({ name: "dataset", params: { identifier } })
+      //   .then(() => {
+      //     console.log('Updated route ', this.$route)
+      //     // process the updated route params
+      //   });
     },
 
     // handling showing a zoomed image on right click
@@ -1754,25 +1758,25 @@ export default {
       }
     },
   },
-  beforeRouteUpdate(to, from) {
-    console.log("toParams");
-    console.log(to);
-    console.log("previousParams");
-    console.log(from);
-    this.dataset.id = parseInt(this.identifier);
-    // this.updatePage();
-  },
+  // beforeRouteUpdate(to, from) {
+  //   console.log("toParams");
+  //   console.log(to);
+  //   console.log("previousParams");
+  //   console.log(from);
+  //   // this.dataset.id = parseInt(this.identifier);
+  //   // this.updatePage();
+  // },
   created() {
-    this.$watch(
-      () => this.$route.params,
-      (toParams, previousParams) => {
-        console.log("toParams");
-        console.log(toParams);
-        console.log("previousParams");
-        console.log(previousParams);
+    // this.$watch(
+    //   () => this.$route.params,
+    //   (toParams, previousParams) => {
+    //     console.log("toParams");
+    //     console.log(toParams);
+    //     console.log("previousParams");
+    //     console.log(previousParams);
 
-      }
-    )
+    //   }
+    // )
     let tab = localStorage.getItem("dataset/tab");
     let order = localStorage.getItem("dataset/order");
     let sideWidth = localStorage.getItem("dataset/sideWidth");

@@ -244,6 +244,7 @@ export default {
       sharedUsers: []
     };
   },
+  
   methods: {
     ...mapMutations(["addProcess", "removeProcess"]),
     onImageClick() {
@@ -310,6 +311,15 @@ export default {
     createSelectedUsers() {
       this.sharedUsers = this.dataset.users;
     }
+  },
+
+  beforeRouteUpdate(to, from) {
+    console.log("toParams");
+    console.log(to);
+    console.log("previousParams");
+    console.log(from);
+    // this.dataset.id = parseInt(this.identifier);
+    // this.updatePage();
   },
   computed: {
     percent() {
