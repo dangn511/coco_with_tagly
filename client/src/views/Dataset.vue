@@ -387,7 +387,10 @@
                     {{ tag }}
                   </span>
                 </div>
-                {{ exp.path }}
+                <div style="display: inline">
+                  {{ exp.path }}
+                </div>
+                
                 <button class="btn btn-sm btn-success" style="float: right; margin: 2px; padding: 2px"
                   @click="downloadExport(exp.id)">
                   Download
@@ -1181,9 +1184,10 @@ export default {
     },
     getExports() {
       Dataset.getExports(this.dataset.id).then((response) => {
+        console.log(response.data);
         this.datasetExports = response.data;
       });
-      console.log(response.data);
+      
     },
     resetMetadata() {
       let r = confirm(
