@@ -30,7 +30,7 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False,
     task.update(status="PROGRESS")
     socket = create_socket()
 
-    task.info("Beginning Export (COCO Format)")
+    task.info(f"Beginning Export dataset {dataset_id} (COCO Format)")
 
     # db_categories = CategoryModel.objects(id__in=categories, deleted=False) \
     #     .only(*CategoryModel.COCO_PROPERTIES)
@@ -42,6 +42,8 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False,
         deleted=False, dataset_id=dataset.id)
     db_annotations = AnnotationModel.objects(
         deleted=False, category_id__in=categories)
+    
+    task.info(f"Number of categories: {db_categories.count()}, images: {db_images.count()}, annotations: {db_annotations.count()}")
 
     total_items = db_categories.count()
 
