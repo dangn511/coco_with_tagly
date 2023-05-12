@@ -511,7 +511,8 @@ class DatasetExports(Resource):
             dict_export.append({
                 'id': export.id,
                 'ago': query_util.td_format(time_delta),
-                'tags': export.tags
+                'tags': export.tags,
+                'path': export.path
             })
 
         return dict_export
