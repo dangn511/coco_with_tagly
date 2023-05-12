@@ -9,3 +9,4 @@ dist/*
 
 docs/.vuepress/dist/*
 models/*.h5
+log.txt

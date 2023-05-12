@@ -1,13 +1,13 @@
 {
-    "supercategory": "supercat1",
+    "supercategory": "supercat2",
 
     "tags": [
         {
-            "name": "batchaaa",
+            "name": "batch111",
             "color": "#AAAAAA"
         },
         {
-            "name": "batchbbb",
+            "name": "batch222",
             "color": "#5a3776"
         }
        
