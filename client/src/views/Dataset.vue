@@ -1227,6 +1227,8 @@ export default {
     },
     exportCOCO() {
       $("#exportDataset").modal("hide");
+      console.log("this.dataset.id: ");
+      console.log(this.dataset.id);
       // console.log("exporting as csv");
       // console.log(this.exporting.as_csv);
       Dataset.exportingCOCO(

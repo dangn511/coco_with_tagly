@@ -536,6 +536,8 @@ class DatasetExport(Resource):
             categories = [int(c) for c in categories.split(',')]
 
         dataset = DatasetModel.objects(id=dataset_id).first()
+        # TODO: remove after debug
+        print(dataset)
         
         if not dataset:
             return {'message': 'Invalid dataset ID'}, 400

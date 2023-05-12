@@ -100,6 +100,12 @@ class DatasetModel(DynamicDocument):
 
         cel_task = export_annotations.delay(task.id, self.id, categories, with_empty_images, as_csv)
 
+        print({
+            "celery_id": cel_task.id,
+            "id": task.id,
+            "name": task.name
+        })
+
         return {
             "celery_id": cel_task.id,
             "id": task.id,
