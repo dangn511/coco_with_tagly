@@ -8,6 +8,7 @@ from mongoengine import *
 from .events import Event, SessionEvent
 from .datasets import DatasetModel
 from .annotations import AnnotationModel
+import datetime
 
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -49,7 +50,7 @@ class ImageModel(DynamicDocument):
     image_url = StringField()
     coco_url = StringField()
     date_captured = DateTimeField()
-    descriptor = StringField()
+    descriptor = StringField(default="")
 
     metadata = DictField()
     license = IntField()
@@ -79,9 +80,21 @@ class ImageModel(DynamicDocument):
 
         # get info for date_captured and descriptor
         date_time = image.file_name.split('.')[0]
-        date_time_list = date_time.split('_')
+        # image.date_captured = date_time
 
+
+        dt_list = date_time.split('_')
+
+        capture_time_list = [int(i) for i in dt_list[0:6]]
+
+        image.date_captured = datetime.datetime(capture_time_list[0], capture_time_list[1], capture_time_list[2], capture_time_list[3], capture_time_list[4], capture_time_list[5], tzinfo=None)
+        
         # backward compatibility with older file names
+        if len(dt_list) == 8:
+            # got descriptor
+            image.descriptor = dt_list[6]
+            # else descriptor is default blank
+
 
         if dataset_id is not None:
             image.dataset_id = dataset_id

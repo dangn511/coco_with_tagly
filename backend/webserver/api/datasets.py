@@ -451,6 +451,8 @@ class DatasetDataId(Resource):
         
         total = images.count()
         pages = int(total/per_page) + 1
+
+        # print(images)
         
         images = images.skip(page*per_page).limit(per_page)
         images_json = query_util.fix_ids(images)
@@ -467,12 +469,9 @@ class DatasetDataId(Resource):
         #     images_json.append(image_json)
 
         # Changes: to return ONLY current_user's annotation
-        # print(images_json)
-        # print("what the hell is this images_json")
-        # print(type(images_json))
-        # print(len(images_json))
+
         for img in images_json:
-            print(img['batch_annotations'])
+            # print(img['batch_annotations'])
             img["batch_annotations"] = [anno for anno in img["batch_annotations"] if anno['creator'] == current_user.username]
             
 
