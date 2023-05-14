@@ -91,8 +91,13 @@ class DatasetModel(DynamicDocument):
         if categories is None or len(categories) == 0:
             categories = self.categories
 
+        if as_csv:
+            export_style = "CSV"
+        else:
+            export_style = "COCO"
+
         task = TaskModel(
-            name=f"Exporting {self.name} into {style} format",
+            name=f"Exporting {self.name} into {export_style} format",
             dataset_id=self.id,
             group="Annotation Export"
         )

@@ -30,7 +30,9 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False,
     task.update(status="PROGRESS")
     socket = create_socket()
 
-    task.info(f"Beginning Export dataset {dataset_id} (COCO Format)")
+    export_format = "CSV" if as_csv else "COCO"
+
+    task.info(f"Beginning Export dataset {dataset_id} ({export_format} Format)")
 
     # db_categories = CategoryModel.objects(id__in=categories, deleted=False) \
     #     .only(*CategoryModel.COCO_PROPERTIES)
@@ -167,7 +169,7 @@ def export_annotations(task_id, dataset_id, categories, with_empty_images=False,
 
     task.info("Creating export object")
     export = ExportModel(dataset_id=dataset.id, path=file_path, tags=[
-                         "COCO", *category_names])
+                         export_format, *category_names])
     export.save()
 
     task.set_progress(100, socket=socket)
