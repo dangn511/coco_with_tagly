@@ -68,6 +68,19 @@ class CategoryModel(DynamicDocument):
         }
         return im.Category(**data)
     
+    def imantics_call(self):
+        """ Generates imantics category object """
+        data = {
+            'name': self.name,
+            # Fix the unexpected keyword thing in console, revert later probably
+            # 'category_type': self.category_type,
+            'color': self.color,
+            'parent': self.supercategory,
+            'metadata': self.metadata,
+            'id': self.id
+        }
+        return im.Category(**data)
+    
     def is_owner(self, user):
 
         if user.is_admin:

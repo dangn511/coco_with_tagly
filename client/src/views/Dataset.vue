@@ -1800,7 +1800,7 @@ export default {
   },
   mounted() {
     // TODO: need or no?
-    //this.tab = "batchtag";
+    this.tab = "batchtag";
     window.addEventListener("mouseup", this.stopDrag);
     window.addEventListener("mousedown", this.startDrag);
   },

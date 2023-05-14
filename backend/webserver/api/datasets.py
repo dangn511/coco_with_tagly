@@ -466,6 +466,16 @@ class DatasetDataId(Resource):
 
         #     images_json.append(image_json)
 
+        # Changes: to return ONLY current_user's annotation
+        # print(images_json)
+        # print("what the hell is this images_json")
+        # print(type(images_json))
+        # print(len(images_json))
+        for img in images_json:
+            print(img['batch_annotations'])
+            img["batch_annotations"] = [anno for anno in img["batch_annotations"] if anno['creator'] == current_user.username]
+            
+
 
         subdirectories = [f for f in sorted(os.listdir(directory))
                           if os.path.isdir(directory + f) and not f.startswith('.')]

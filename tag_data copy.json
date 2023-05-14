@@ -1,0 +1,16 @@
+{
+    "supercategory": "supercat_testuser",
+
+    "tags": [
+        {
+            "name": "batch1234",
+            "color": "#AAAAAA"
+        },
+        {
+            "name": "batch5678",
+            "color": "#5a3776"
+        }
+       
+        
+    ]
+}

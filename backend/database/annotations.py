@@ -18,6 +18,7 @@ class AnnotationModel(DynamicDocument):
     id = SequenceField(primary_key=True)
     image_id = IntField(required=True)
     category_id = IntField(required=True)
+    category_type = StringField(default='')
     dataset_id = IntField()
 
     segmentation = ListField(default=[])

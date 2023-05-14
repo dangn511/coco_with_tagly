@@ -49,6 +49,7 @@ class ImageModel(DynamicDocument):
     image_url = StringField()
     coco_url = StringField()
     date_captured = DateTimeField()
+    descriptor = StringField()
 
     metadata = DictField()
     license = IntField()
@@ -75,6 +76,12 @@ class ImageModel(DynamicDocument):
         image.width = pil_image.size[0]
         image.height = pil_image.size[1]
         image.regenerate_thumbnail = True
+
+        # get info for date_captured and descriptor
+        date_time = image.file_name.split('.')[0]
+        date_time_list = date_time.split('_')
+
+        # backward compatibility with older file names
 
         if dataset_id is not None:
             image.dataset_id = dataset_id
