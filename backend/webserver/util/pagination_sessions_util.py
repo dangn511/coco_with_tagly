@@ -1,5 +1,5 @@
 
-class Pagination:
+class PaginationSessions:
 
     start = 0
     end = 0

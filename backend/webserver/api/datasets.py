@@ -9,6 +9,7 @@ from threading import Thread
 from google_images_download import google_images_download as gid
 
 from ..util.pagination_util import Pagination
+from ..util.pagination_sessions_util import PaginationSessions
 from ..util import query_util, coco_util, profile
 
 from database import (
@@ -454,6 +455,161 @@ class DatasetDataId(Resource):
             .order_by(order)
         
         total = images.count()
+        pages = int(total/per_page) + 1
+
+        # print(images)
+        
+        images = images.skip(page*per_page).limit(per_page)
+        images_json = query_util.fix_ids(images)
+        # for image in images:
+        #     image_json = query_util.fix_ids(image)
+
+        #     query = AnnotationModel.objects(image_id=image.id, deleted=False)
+        #     category_ids = query.distinct('category_id')
+        #     categories = CategoryModel.objects(id__in=category_ids).only('name', 'color')
+
+        #     image_json['annotations'] = query.count()
+        #     image_json['categories'] = query_util.fix_ids(categories)
+
+        #     images_json.append(image_json)
+
+        # Changes: to return ONLY current_user's annotation
+
+        for img in images_json:
+            # print(img['batch_annotations'])
+            img["batch_annotations"] = [anno for anno in img["batch_annotations"] if anno['creator'] == current_user.username]
+            
+
+
+        subdirectories = [f for f in sorted(os.listdir(directory))
+                          if os.path.isdir(directory + f) and not f.startswith('.')]
+        
+        # This is the problem thing for category retrieval for dataset.vue
+        # categories = CategoryModel.objects(id__in=dataset.categories).only('id', 'name')
+        categories = CategoryModel.objects(id__in=dataset.categories)
+
+        categories_json = query_util.fix_ids(categories)
+        categories_json = [cat for cat in categories_json if cat['creator'] == current_user.username]
+
+
+        return {
+            "total": total,
+            "per_page": per_page,
+            "pages": pages,
+            "page": page,
+            "images": images_json,
+            "folder": folder,
+            "directory": directory,
+            "dataset": query_util.fix_ids(dataset),
+            "categories": categories_json,
+            "subdirectories": subdirectories
+        }
+    
+@api.route('/<int:dataset_id>/datasession')
+class DatasetDataIdSession(Resource):
+
+    @profile
+    @api.expect(page_data)
+    @login_required
+    def get(self, dataset_id):
+        """ Endpoint called by image viewer client """
+
+        parsed_args = page_data.parse_args()
+        # per_page = parsed_args.get('limit')
+        page = parsed_args.get('page') - 1
+        folder = parsed_args.get('folder')
+        order = parsed_args.get('order')
+
+        args = dict(request.args)
+
+        # Check if dataset exists
+        dataset = current_user.datasets.filter(id=dataset_id, deleted=False).first()
+        if dataset is None:
+            return {'message', 'Invalid dataset id'}, 400
+                
+        # Make sure folder starts with is in proper format
+        if len(folder) > 0:
+            folder = folder[0].strip('/') + folder[1:]
+            if folder[-1] != '/':
+                folder = folder + '/'
+
+        # Get directory
+        directory = os.path.join(dataset.directory, folder)
+        if not os.path.exists(directory):
+            return {'message': 'Directory does not exist.'}, 400
+
+        # Remove parsed arguments
+        for key in parsed_args:
+            args.pop(key, None)
+        
+        # Generate query from remaining arugments
+        query = {}
+        for key, value in args.items():
+            lower = value.lower()
+            if lower in ["true", "false"]:
+                value = json.loads(lower)
+            
+            if len(lower) != 0:
+                query[key] = value
+
+        # Change category_ids__in to list
+        if 'category_ids__in' in query.keys():
+            query['category_ids__in'] = [int(x) for x in query['category_ids__in'].split(',')]
+
+        # Initialize mongo query with required elements:
+        query_build = Q(dataset_id=dataset_id)
+        query_build &= Q(path__startswith=directory)
+        query_build &= Q(deleted=False)
+
+        # Define query names that should use complex logic:
+        complex_query = ['annotated', 'category_ids__in']
+
+        # Add additional 'and' arguments to mongo query that do not require complex_query logic
+        for key in query.keys():
+            if key not in complex_query:
+                query_dict = {}
+                query_dict[key] = query[key]
+                query_build &= Q(**query_dict)
+
+        # Add additional arguments to mongo query that require more complex logic to construct
+        if 'annotated' in query.keys():
+
+            if 'category_ids__in' in query.keys() and query['annotated']:
+
+                # Only show annotated images with selected category_ids
+                query_dict = {}
+                query_dict['category_ids__in'] = query['category_ids__in']
+                query_build &= Q(**query_dict)
+
+            else:
+
+                # Only show non-annotated images
+                query_dict = {}
+                query_dict['annotated'] = query['annotated']
+                query_build &= Q(**query_dict)
+
+        elif 'category_ids__in' in query.keys():
+
+            # Ahow annotated images with selected category_ids or non-annotated images
+            query_dict_1 = {}
+            query_dict_1['category_ids__in'] = query['category_ids__in']
+
+            query_dict_2 = {}
+            query_dict_2['annotated'] = False
+            query_build &= (Q(**query_dict_1) | Q(**query_dict_2))
+
+        # Perform mongodb query
+        # images = current_user.images \
+        #     .filter(query_build) \
+        #     .order_by(order).only('id', 'file_name', 'annotating', 'annotated', 'num_annotations')
+        images = current_user.images \
+            .filter(query_build) \
+            .order_by(order)
+        
+        total = images.count()
+
+        # TODO: this is where the pagination begins
+
         pages = int(total/per_page) + 1
 
         # print(images)

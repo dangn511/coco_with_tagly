@@ -66,6 +66,9 @@ class ImageModel(DynamicDocument):
     batch_annotated = BooleanField(default=False)
     batch_annotations = ListField(default=[])
 
+    # this is for session pagination
+    session_page = IntField(default=0)
+
     @classmethod
     def create_from_path(cls, path, dataset_id=None):
 

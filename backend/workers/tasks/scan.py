@@ -53,6 +53,7 @@ def scan_dataset(task_id, dataset_id):
                 except Exception as e:
                     task.warning(f"Could not read {path}")
                     task.warning(f"{e}")
+                    
 
     [thumbnail_generate_single_image.delay(image.id) for image in ImageModel.objects(regenerate_thumbnail=True).all()]
 
