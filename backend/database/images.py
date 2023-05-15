@@ -215,6 +215,9 @@ class ImageModel(DynamicDocument):
     def can_download(self, user):
         return user.can_download(self.dataset)
     
+    def can_download_exports(self, user):
+        return user.can_download_exports(self.dataset)
+    
     # TODO: Fix why using the functions throws an error
     def permissions(self, user):
         return {

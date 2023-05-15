@@ -43,7 +43,10 @@ class UserModel(DynamicDocument, UserMixin):
             return CategoryModel.objects
 
         dataset_ids = self.datasets.distinct('categories')
-        return CategoryModel.objects(Q(id__in=dataset_ids) | Q(creator=self.username))
+        # Fix May 15: only return categories created by that user
+        return CategoryModel.objects(Q(id__in=dataset_ids) & Q(creator=self.username))
+
+        # return CategoryModel.objects(Q(id__in=dataset_ids) | Q(creator=self.username))
 
     @property
     def images(self):
@@ -76,6 +79,12 @@ class UserModel(DynamicDocument, UserMixin):
             return False
 
         return model.can_download(self)
+    
+    def can_download_exports(self, model):
+        if model is None:
+            return False
+
+        return model.can_download_exports(self)
         
     def can_delete(self, model):
         if model is None:

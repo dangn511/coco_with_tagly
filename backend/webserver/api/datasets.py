@@ -341,6 +341,10 @@ class DatasetData(Resource):
                 dataset_json['first_image_id'] = images.first().id
             datasets_json.append(dataset_json)
 
+        all_categories = query_util.fix_ids(current_user.categories.filter(deleted=False).all())
+        categories_response = [cat for cat in all_categories ]
+
+
         return {
             "pagination": pagination.export(),
             "folder": folder,
@@ -512,7 +516,8 @@ class DatasetExports(Resource):
         if dataset is None:
             return {"message": "Invalid dataset ID"}, 400
         
-        if not current_user.can_download(dataset):
+        if not current_user.can_download_exports(dataset):
+        # if not current_user.can_download(dataset):
             return {"message": "You do not have permission to download the dataset's annotations"}, 403
         
         exports = ExportModel.objects(dataset_id=dataset.id).order_by('-created_at').limit(50)
@@ -607,7 +612,8 @@ class DatasetCoco(Resource):
         if dataset is None:
             return {"message": "Invalid dataset ID"}, 400
         
-        if not current_user.can_download(dataset):
+        # if not current_user.can_download(dataset):
+        if not current_user.can_download_exports(dataset):
             return {"message": "You do not have permission to download the dataset's annotations"}, 403
 
         return coco_util.get_dataset_coco(dataset)
