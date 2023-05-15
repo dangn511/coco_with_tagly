@@ -483,6 +483,10 @@ class DatasetDataId(Resource):
         # categories = CategoryModel.objects(id__in=dataset.categories).only('id', 'name')
         categories = CategoryModel.objects(id__in=dataset.categories)
 
+        categories_json = query_util.fix_ids(categories)
+        categories_json = [cat for cat in categories_json if cat['creator'] == current_user.username]
+
+
         return {
             "total": total,
             "per_page": per_page,
@@ -492,7 +496,7 @@ class DatasetDataId(Resource):
             "folder": folder,
             "directory": directory,
             "dataset": query_util.fix_ids(dataset),
-            "categories": query_util.fix_ids(categories),
+            "categories": categories_json,
             "subdirectories": subdirectories
         }
 

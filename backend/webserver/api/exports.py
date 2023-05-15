@@ -1,3 +1,4 @@
+import json
 from flask import send_file
 from flask_restplus import Namespace, Resource, reqparse
 from flask_login import login_required, current_user
@@ -69,6 +70,14 @@ class DatasetExports(Resource):
         
         extension = export.path.split('.')[-1]
         export_type = export.tags[0]
+
+        resp = send_file(export.path, attachment_filename=f"{dataset.name.encode('utf-8')}-{'-'.join(export.tags).encode('utf-8')}.{extension}", as_attachment=True)
+
+        resp.headers['extension'] = extension
+        resp.headers['export_type'] = export_type
+        
+        return resp
         
 
-        return send_file(export.path, attachment_filename=f"{dataset.name.encode('utf-8')}-{'-'.join(export.tags).encode('utf-8')}.{extension}", as_attachment=True), 200, {'extension': f"{extension}", 'export_type': f"{export_type}"}
+    #     return send_file(export.path, attachment_filename=f"{dataset.name.encode('utf-8')}-{'-'.join(export.tags).encode('utf-8')}.{extension}", as_attachment=True)
+    # # , 200, {'extension': f"{extension}", 'export_type': f"{export_type}"}

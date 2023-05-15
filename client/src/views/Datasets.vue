@@ -235,6 +235,7 @@ export default {
       }).then(response => {
         this.datasets = response.data.datasets;
         console.log(this.datasets);
+        console.log(this.categories);
         this.categories = response.data.categories;
         this.subdirectories = response.data.subdirectories;
         this.pages = response.data.pagination.pages;
